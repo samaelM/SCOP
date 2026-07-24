@@ -1,15 +1,16 @@
 #ifndef SCOP_WINDOW_HPP
 #	define SCOP_WINDOW_HPP
 
+#	include "../../ressources/lib/glad/include/glad/glad.h"	//Used to find opengl functions and types
+#	include "../Graphics/Graphics.hpp"						//Used for the Mesh, Texture and Shader classes
+#	include "../Parser/Parser.hpp"							//Used to parse .obj file
+
 #	include <iostream>										//Used to print info on the stdout
 #	include <exception>										//Used for throwing exceptions
 #	include <math.h>										//Used for angles calculation (radians, for matrices)
 #	include <chrono>										//Used to calculate delta time
 #	include <GLFW/glfw3.h>									//Used to the window
 
-#	include "../../ressources/lib/glad/include/glad/glad.h"	//Used to find opengl functions and types
-#	include "../Graphics/Graphics.hpp"						//Used for the Mesh, Texture and Shader classes
-#	include "../Parser/Parser.hpp"							//Used to parse .obj file
 
 
 //A basic vertex shader in case the user don't give any shader, or the given shader does not work
@@ -33,17 +34,23 @@ struct Paramters {
 class Window {
 	private:
 		GLFWwindow* _window = NULL;
-		Mesh _mesh;
+		Mesh *_mesh = NULL;
 		Shader _shader;
+		Texture _texture;
 
-		void setupShader();
+		void init(const int &width, const int &height, const char* title);
 		void gladLoad();
-		void loadTexture(std::string path);
-		void createMesh(std::string name, Data &data);
-		void createWindow(int width, int height, const char* title);
+		void loadMesh(const std::string &path);
+		void loadTexture(const std::string &path);
+		void loadShaders(const std::string &vertShPath, const std::string &fragShPath);
+		void setupShader();
 
 	public:
-		Window(Paramters &param, std::string &meshPath, std::string &texturePath);
+		Window(	const Paramters &param,
+				const std::string &vertShPath,
+				const std::string &fragShPath,
+				const std::string &meshPath,
+				const std::string &texturePath);
 		~Window();
 
 		void start();
