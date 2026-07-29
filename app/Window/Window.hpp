@@ -11,8 +11,6 @@
 #	include <chrono>										//Used to calculate delta time
 #	include <GLFW/glfw3.h>									//Used to the window
 
-
-
 //A basic vertex shader in case the user don't give any shader, or the given shader does not work
 #	define VERTEX_SHADER_DEFAULT "#version 330 core\nlayout (location = 0) in vec3 aPos;\nvoid main()\n{\n   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n}\0"
 //Same but for fragment shader
@@ -44,6 +42,7 @@ class Window {
 		void loadTexture(const std::string &path);
 		void loadShaders(const std::string &vertShPath, const std::string &fragShPath);
 		void setupShader();
+		void processInput(GLFWwindow *Window);
 
 	public:
 		Window(	const Paramters &param,

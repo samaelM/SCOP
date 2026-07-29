@@ -4,6 +4,11 @@
 #define WINDOW_HEIGHT 800
 #define WINDOW_TITLE "SCOP"
 
+#define VERTEX_SHADER_FILE "ressources/shaders/default.vert"
+#define FRAGMENT_SHADER_FILE "ressources/shaders/default.frag"
+#define TEXTURE_FILE "ressources/textures/moumou.png"
+// #define OBJECT_FILE "ressources/objects/."
+
 int main(int argc, char const *argv[])
 {
 	if (argc != 2) {
@@ -13,7 +18,7 @@ int main(int argc, char const *argv[])
 	try
 	{
 		Paramters param({WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE});
-		Window app(param, "vert", "frag", "mesh", "text");
+		Window app(param, VERTEX_SHADER_FILE, FRAGMENT_SHADER_FILE, argv[1], TEXTURE_FILE);
 
 		app.start();
 	}

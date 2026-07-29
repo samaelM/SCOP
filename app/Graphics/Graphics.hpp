@@ -5,8 +5,8 @@
 #	include <vector>										//Used to store data in better arrays
 
 #	include "../../ressources/lib/glad/include/glad/glad.h"	//Used to find opengl functions and types
-#	include "../Parser/Parser.hpp"							//Used to parse .obj file
-#	include "../Parser/Data.hpp"							//Used to parse .obj file
+// #	include "../Parser/Parser.hpp"							//Used to parse .obj file
+// #	include "../Parser/Data.hpp"							//Used to parse .obj file
 
 #	ifndef SCOP_VERTEX
 #		define SCOP_VERTEX
@@ -23,17 +23,17 @@ class Mesh {
 		std::vector<Vertex> _vertices;
 		std::vector<GLuint> _faces;
 
-		uint32_t init(const Data &data);
+		uint32_t init();
 
 	public:
-		Mesh(const std::string &path);
+		Mesh(const std::vector<Vertex> vertices, const std::vector<GLuint> faces);
 		Mesh();
 		~Mesh();
 
 		const GLuint &getVBO() const {return _VBO;};
 		const GLuint &getVAO() const {return _VAO;};
-		const GLsizei nbFaces() const {return _vertices.size();};
-		const GLsizei nbVertices() const {return _faces.size();};
+		const GLsizei nbFaces() const {return _faces.size();};
+		const GLsizei nbVertices() const {return _vertices.size();};
 };
 
 class Shader {
@@ -49,7 +49,7 @@ class Shader {
 		Shader() = default;
 		~Shader();
 
-		GLuint getShader() const {return _shaderProgram;};
+		const GLuint getShader() const {return _shaderProgram;};
 };
 
 class Texture {

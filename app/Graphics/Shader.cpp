@@ -13,7 +13,9 @@ void Shader::init() {
 }
 
 void Shader::addVertexShader(const std::string &path) {
-	const char *source = load(path).c_str();
+	const std::string content = load(path);
+	const char *source = content.c_str();
+	// std::cout << source << std::endl;
 	const GLuint shader = glCreateShader(GL_VERTEX_SHADER);
 
 	glShaderSource(shader, 1, &source , NULL);
@@ -24,7 +26,9 @@ void Shader::addVertexShader(const std::string &path) {
 }
 
 void Shader::addFragmentShader(const std::string &path) {
-	const char *source = load(path).c_str();
+	const std::string content = load(path);
+	const char *source = content.c_str();
+	// std::cout << source << std::endl;
 	const GLuint shader = glCreateShader(GL_FRAGMENT_SHADER);
 
 	glShaderSource(shader, 1, &source , NULL);
