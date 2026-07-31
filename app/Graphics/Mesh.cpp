@@ -28,9 +28,6 @@ uint32_t Mesh::init() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	// glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(3 * sizeof(GLfloat)));
-	// glEnableVertexAttribArray(1);
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -110,6 +107,7 @@ void Mesh::rotate(const float direction, const Axis axis, const float &deltaTime
 }
 
 void Mesh::move(const float direction, const Axis axis, const float &deltaTime) {
+	(void)deltaTime;
 	switch (axis)
 	{
 	case Axis::X:

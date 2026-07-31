@@ -42,7 +42,7 @@ ${NAME}:all
 
 all: ${GLAD} ${OBJS}
 	@printf "${RETURN}${RED}[COMPILING 🛞 ]${WHITE}${NAME} :"
-	@${CC} $(CFLAGS_TEMP) ${OBJS} ${GLAD} -o ${NAME}
+	@${CC} $(CFLAGS) ${OBJS} ${GLAD} -o ${NAME}
 	@printf "${RETURN}${GREEN}[DONE! ✅]${WHITE}${NAME}\n"
 	@printf "${RED}${BOLD}   ____________  \n"
 	@printf "  (  COMPILED! ) \n"
@@ -54,7 +54,7 @@ all: ${GLAD} ${OBJS}
 ${OBJS_DIR}/%.o: %.cpp
 	@mkdir -p ${dir $@}
 	@printf "${RETURN}${RED}[COMPILING 🛞 ]${WHITE}$< :"
-	@${CC} $(CFLAGS_TEMP) -c -o $@ $<
+	@${CC} $(CFLAGS) -c -o $@ $<
 	@printf "${RETURN}${GREEN}[DONE! ✅]${WHITE}$< -> $@\n"
 
 ${GLAD}: ${OBJS_GLAD}
@@ -63,7 +63,7 @@ ${GLAD}: ${OBJS_GLAD}
 ${OBJS_DIR}/%.o: %.c
 	@mkdir -p ${dir $@}
 	@printf "${RETURN}${RED}[COMPILING 🛞 ]${WHITE}$< :"
-	@${CC} $(CFLAGS_TEMP) -c -o $@ $<
+	@${CC} $(CFLAGS) -c -o $@ $<
 	@printf "${RETURN}${GREEN}[DONE! ✅]${WHITE}$< -> $@\n"
 
 clean:

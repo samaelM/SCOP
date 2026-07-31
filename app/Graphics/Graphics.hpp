@@ -68,7 +68,7 @@ class Shader {
 		Shader() = default;
 		~Shader();
 
-		const GLuint getShader() const {return _shaderProgram;};
+		const GLuint &getShader() const {return _shaderProgram;};
 };
 
 class Mesh {
@@ -107,8 +107,8 @@ class Mesh {
 
 		const GLuint &getVBO() const {return _VBO;};
 		const GLuint &getVAO() const {return _VAO;};
-		const GLsizei nbFaces() const {return _faces.size();};
-		const GLsizei nbVertices() const {return _vertices.size();};
+		GLsizei nbFaces() const {return _faces.size();};
+		GLsizei nbVertices() const {return _vertices.size();};
 
 		void prepare(const Shader &shader);
 
@@ -121,6 +121,7 @@ class Texture {
 	private:
 		unsigned char *_textureData;
 		GLuint _texture = 0;
+		void init(const std::string &path);
 
 	public:
 		Texture(const std::string &path);

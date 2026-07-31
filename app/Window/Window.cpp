@@ -117,7 +117,7 @@ void Window::loadMesh(const std::string &path) {
 }
 
 void Window::loadTexture(const std::string &path) {
-	this->_texture = Texture(path);
+	this->_texture = new Texture(path);
 
 	std::cout << "Successfully loaded Texture in memory ";
 	std::cout << " from file : `" << path << "`" << std::endl;
@@ -136,8 +136,13 @@ void Window::start() {
 	glEnable(GL_DEPTH_TEST);
 
 	// void (*)(GLFWwindow *window, int key, int scancode, int action, int mods)"
-	// glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode, int action, int mods){;});
-	// glfwSetKeyCallback(window, [](GLFWwindow *window, int key, int scancode, int action, int mods){;});
+	glfwSetKeyCallback(this->_window, [](GLFWwindow *window, int key, int scancode, int action, int mods){
+		(void)window;
+		(void)scancode;
+		(void)mods;
+		if (key == GLFW_KEY_SPACE and action == GLFW_RELEASE)
+			std::cout <<"space"<<std::endl;
+		});
 	this->_mesh->prepare(this->_shader);
 
 	std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();

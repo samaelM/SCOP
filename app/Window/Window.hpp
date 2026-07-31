@@ -7,7 +7,6 @@
 
 #	include <iostream>										//Used to print info on the stdout
 #	include <exception>										//Used for throwing exceptions
-#	include <math.h>										//Used for angles calculation (radians, for matrices)
 #	include <chrono>										//Used to calculate delta time
 #	include <GLFW/glfw3.h>									//Used to the window
 
@@ -34,7 +33,7 @@ class Window {
 		GLFWwindow* _window = NULL;
 		Mesh *_mesh = NULL;
 		Shader _shader;
-		Texture _texture;
+		Texture *_texture;
 
 		float _deltaTime = 0.0f;
 
@@ -43,7 +42,6 @@ class Window {
 		void loadMesh(const std::string &path);
 		void loadTexture(const std::string &path);
 		void loadShaders(const std::string &vertShPath, const std::string &fragShPath);
-		void setupShader();
 		void processInput(GLFWwindow *Window);
 
 	public:
