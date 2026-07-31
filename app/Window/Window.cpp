@@ -29,30 +29,30 @@ void Window::processInput(GLFWwindow *window)
 	}
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
 		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-			this->_mesh->move(1, Axis::Z, this->_deltaTime);
-		}
-		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
 			this->_mesh->move(-1, Axis::Z, this->_deltaTime);
 		}
+		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
+			this->_mesh->move(1, Axis::Z, this->_deltaTime);
+		}
 		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-			this->_mesh->rotate(1, Axis::Z, this->_deltaTime);
+			this->_mesh->rotate(-1, Axis::Z, this->_deltaTime);
 		}
 		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-			this->_mesh->rotate(-1, Axis::Z, this->_deltaTime);
+			this->_mesh->rotate(1, Axis::Z, this->_deltaTime);
 		}
 		return;
 	}
 	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		this->_mesh->move(1, Axis::X, this->_deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-		this->_mesh->move(-1, Axis::X, this->_deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
 		this->_mesh->move(1, Axis::Y, this->_deltaTime);
 	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
 		this->_mesh->move(-1, Axis::Y, this->_deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+		this->_mesh->move(-1, Axis::X, this->_deltaTime);
+	}
+	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+		this->_mesh->move(1, Axis::X, this->_deltaTime);
 	}
 }
 
@@ -89,7 +89,7 @@ void Window::init(const int &width, const int &height, const char* title) {
 		glfwTerminate();
 		throw WindowCreationException();
 	}
-	std::cout << "Successfully created window" << std::endl;
+	std::cout << "Successfully created window (" << width << "|" << height << ")" << std::endl;
 
 	glfwMakeContextCurrent(this->_window);
 	glfwSetFramebufferSizeCallback(this->_window, framebuffer_size_callback);
@@ -158,10 +158,7 @@ void Window::start() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(this->_shader.getShader());
 
-		// this->_mesh->rotate(Direction::LEFT, this->_deltaTime);
 		this->_mesh->show();
-
-		
 
 		glBindVertexArray(this->_mesh->getVAO());
 		glDrawElements(GL_TRIANGLES, this->_mesh->nbFaces(), GL_UNSIGNED_INT, 0);

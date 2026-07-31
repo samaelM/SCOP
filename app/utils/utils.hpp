@@ -37,7 +37,7 @@ inline void perspective(float* m, float fov_y_radians, float aspect, float near_
     m[14] = -(2.0f * far_plane * near_plane) / z_range;
 }
 
-void multiplyMatrix(const float* A, const float* B, float* out) {
+inline void multiplyMatrix(const float* A, const float* B, float* out) {
     float temp[16] = {0.0f};
     for (int col = 0; col < 4; ++col) {
         for (int row = 0; row < 4; ++row) {

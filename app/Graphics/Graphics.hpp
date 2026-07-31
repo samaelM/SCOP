@@ -90,6 +90,10 @@ class Mesh {
 		GLfloat _view[16] = M_VIEW;
 		GLuint _viewUniform;
 
+		GLuint _DXUniform;
+		GLuint _DYUniform;
+		GLuint _DZUniform;
+
 		uint32_t init();
 
 		void rotateX(const float &deltaAngle);

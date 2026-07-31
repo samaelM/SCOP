@@ -40,6 +40,10 @@ uint32_t Mesh::init() {
 }
 
 void Mesh::prepare(const Shader &shader) {
+	this->_DXUniform = glGetUniformLocation(shader.getShader(), "dx");
+	this->_DYUniform = glGetUniformLocation(shader.getShader(), "dy");
+	this->_DZUniform = glGetUniformLocation(shader.getShader(), "dz");
+
 	this->_modelUniform = glGetUniformLocation(shader.getShader(), "m_model");
 	this->_projectionUniform = glGetUniformLocation(shader.getShader(), "m_projection");
 	this->_viewUniform = glGetUniformLocation(shader.getShader(), "m_view");
@@ -106,13 +110,32 @@ void Mesh::rotate(const float direction, const Axis axis, const float &deltaTime
 }
 
 void Mesh::move(const float direction, const Axis axis, const float &deltaTime) {
-
+	switch (axis)
+	{
+	case Axis::X:
+		this->_deltas.position[0] += direction * 0.01;
+		break;
+	case Axis::Y:
+		this->_deltas.position[1] += direction * 0.01;
+		break;
+	case Axis::Z:
+		this->_deltas.position[2] += direction * 0.01;
+		break;
+	
+	default:
+		break;
+	}
 }
 
 void Mesh::show() {
 	perspective(this->_projection, M_PI / 2, 800/800, 0.1f, 100.0f);
 	GLfloat vec[3] = {0.0f, 0.0f, -3.0f};
 	translate(this->_view, vec);
+
+	glUniform1f(this->_DXUniform, this->_deltas.position[0]);
+	glUniform1f(this->_DYUniform, this->_deltas.position[1]);
+	glUniform1f(this->_DZUniform, this->_deltas.position[2]);
+
 	glUniformMatrix4fv(this->_modelUniform, 1, GL_FALSE, this->_model);
 	glUniformMatrix4fv(this->_viewUniform, 1, GL_FALSE, this->_view);
 	glUniformMatrix4fv(this->_projectionUniform, 1, GL_FALSE, this->_projection);
