@@ -94,10 +94,8 @@ Data Parser::parseFile(std::fstream &file) {
 	}
 	while (file.good()) {
 		getline(file, line);
-		// std::cout << "reading line:" << line << "\n";
 		elements = split(line, " ");
 		if (elements[0].compare("v") == 0) {
-			// std::cout << "added vertex!\n";
 			if (elements[0].empty() or elements[1].empty() or elements[2].empty() or elements[3].empty()) {
 				throw std::out_of_range("not enough coordinates :" + printTab(elements));
 			}
@@ -120,39 +118,11 @@ Data Parser::parseFile(std::fstream &file) {
 				throw std::out_of_range("too much coordinates");
 		}
 		else {
-			// std::cout << "added nothing!(" << line << ")\n";
 		}
 	}
-	// std::cout <<std::endl;
 	return (data);
 }
 
 std::fstream Parser::openFile(std::string &fileName) {
 	return std::fstream(fileName);
 }
-
-
-// std::ostream &operator<<(std::ostream &os, const Data &data)
-// {
-// 	std::string str_vertex = "";
-// 	std::string str_faces = "";
-// 	std::vector<Vertex> vertex = data.getVertices();
-// 	std::cout << "vertex size: " << vertex.size()<< "\n";
-// 	for (size_t i = 0; i < vertex.size(); i++)
-// 	{
-// 		str_vertex += std::to_string(vertex[i].position[0]) + " " + std::to_string(vertex[i].position[1]) + " " + std::to_string(vertex[i].position[2]) + "\n";
-// 	}
-// 	std::vector<GLuint> faces = data.getFaces();
-// 	std::cout << "faces size: " << faces.size()<< "\n";
-// 	for (size_t i = 0; i < faces.size(); i+=3)
-// 	{
-// 		str_faces += "-" + std::to_string(faces[i]) + std::to_string(faces[i+1]) + std::to_string(faces[i+2]);
-// 		// for (size_t j = 0; j < faces[i].size(); j++)
-// 		// {
-// 		// 	str_faces = str_faces + " " + std::to_string(faces[i][j]);
-// 		// }
-// 		str_faces += '\n';		
-// 	}
-// 	os << "Vertices:\n" << str_vertex << "Faces:\n" << str_faces;
-// 	return (os);
-// }

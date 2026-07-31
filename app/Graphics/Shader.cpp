@@ -1,5 +1,5 @@
 #include "Graphics.hpp"
-#include "../utils/utils.hpp"
+// #include "../utils/utils.hpp"
 
 Shader::Shader(const std::string &vertShPath, const std::string &fragShPath) {
 	this->init();

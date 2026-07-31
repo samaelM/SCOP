@@ -39,5 +39,84 @@ uint32_t Mesh::init() {
 	return 1;
 }
 
+void Mesh::prepare(const Shader &shader) {
+	this->_modelUniform = glGetUniformLocation(shader.getShader(), "m_model");
+	this->_projectionUniform = glGetUniformLocation(shader.getShader(), "m_projection");
+	this->_viewUniform = glGetUniformLocation(shader.getShader(), "m_view");
+}
+
+void Mesh::rotateX(const float &deltaAngle) {
+	const float c = std::cos(deltaAngle);
+	const float s = std::sin(deltaAngle);
+		
+	const float deltaR[16] = {
+		1.0f,	0.0f,	0.0f,	0.0f,
+		0.0f,	c,		s,		0.0f,
+		0.0f,	-s,		c,		0.0f,
+		0.0f,	0.0f,	0.0f,	1.0f
+	};
+
+	multiplyMatrix(this->_model, deltaR, this->_model);
+}
+
+void Mesh::rotateY(const float &deltaAngle) {
+	const float c = std::cos(deltaAngle);
+	const float s = std::sin(deltaAngle);
+		
+	const float deltaR[16] = {
+		c,		0.0f,	-s,		0.0f,
+		0.0f,	1.0f,	0.0f,	0.0f,
+		s,		0.0f,	c,		0.0f,
+		0.0f,	0.0f,	0.0f,	1.0f
+	};
+
+	multiplyMatrix(this->_model, deltaR, this->_model);
+}
+
+void Mesh::rotateZ(const float &deltaAngle) {
+	const float c = std::cos(deltaAngle);
+	const float s = std::sin(deltaAngle);
+		
+	const float deltaR[16] = {
+		 c,		s,		0.0f,	0.0f,
+		-s,		c,		0.0f,	0.0f,
+		 0.0f,	0.0f,	1.0f,	0.0f,
+		 0.0f,	0.0f,	0.0f,	1.0f
+	};
+
+	multiplyMatrix(this->_model, deltaR, this->_model);
+}
+
+void Mesh::rotate(const float direction, const Axis axis, const float &deltaTime) {
+	const float deltaAngle = direction * (static_cast<float>(M_PI) * deltaTime);
+
+	switch (axis) {
+		case Axis::X:
+			this->rotateX(deltaAngle);
+			break;
+		case Axis::Y:
+			this->rotateY(deltaAngle);
+			break;
+		case Axis::Z:
+			this->rotateZ(deltaAngle);
+			break;
+		default:
+			break;
+	}
+}
+
+void Mesh::move(const float direction, const Axis axis, const float &deltaTime) {
+
+}
+
+void Mesh::show() {
+	perspective(this->_projection, M_PI / 2, 800/800, 0.1f, 100.0f);
+	GLfloat vec[3] = {0.0f, 0.0f, -3.0f};
+	translate(this->_view, vec);
+	glUniformMatrix4fv(this->_modelUniform, 1, GL_FALSE, this->_model);
+	glUniformMatrix4fv(this->_viewUniform, 1, GL_FALSE, this->_view);
+	glUniformMatrix4fv(this->_projectionUniform, 1, GL_FALSE, this->_projection);
+}
+
 Mesh::~Mesh() {
 }

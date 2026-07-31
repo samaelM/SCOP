@@ -3,37 +3,56 @@
 
 #	include <iostream>										//Used to print info on the stdout
 #	include <vector>										//Used to store data in better arrays
+#	include <math.h>										//Used for angles calculation (radians, for matrices)
 
 #	include "../../ressources/lib/glad/include/glad/glad.h"	//Used to find opengl functions and types
-// #	include "../Parser/Parser.hpp"							//Used to parse .obj file
-// #	include "../Parser/Data.hpp"							//Used to parse .obj file
+#	include "../utils/utils.hpp"							//Used for matrix calculus
 
-#	ifndef SCOP_VERTEX
-#		define SCOP_VERTEX
+#	define M_PROJECTION {		\
+		0.0f, 0.0f, 0.0f, 0.0f,	\
+		0.0f, 0.0f, 0.0f, 0.0f,	\
+		0.0f, 0.0f, 0.0f, 0.0f,	\
+		0.0f, 0.0f, 0.0f, 1.0f	\
+	}
+
+#	define M_MODEL {			\
+		1.0f, 0.0f, 0.0f, 0.0f,	\
+		0.0f, 1.0f, 0.0f, 0.0f,	\
+		0.0f, 0.0f, 1.0f, 0.0f,	\
+		0.0f, 0.0f, 0.0f, 1.0f	\
+	}
+
+#	define M_VIEW {				\
+		1.0f, 0.0f, 0.0f, 0.0f,	\
+		0.0f, 1.0f, 0.0f, 0.0f,	\
+		0.0f, 0.0f, 1.0f, 0.0f,	\
+		0.0f, 0.0f, 0.0f, 1.0f	\
+	}
+
 struct Vertex {
 	GLfloat position[3];
 	GLfloat texCoords[2];
 };
-#	endif
 
-class Mesh {
-	private:
-		GLuint _VAO = 0;
-		GLuint _VBO = 0;
-		std::vector<Vertex> _vertices;
-		std::vector<GLuint> _faces;
+struct Deltas {
+	GLfloat position[3] = {0.0f};
+	GLfloat rotation[3] = {0.0f};
+};
 
-		uint32_t init();
+enum Direction {
+	NONE,
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	FORWARD,
+	BACKWARD,
+};
 
-	public:
-		Mesh(const std::vector<Vertex> vertices, const std::vector<GLuint> faces);
-		Mesh();
-		~Mesh();
-
-		const GLuint &getVBO() const {return _VBO;};
-		const GLuint &getVAO() const {return _VAO;};
-		const GLsizei nbFaces() const {return _faces.size();};
-		const GLsizei nbVertices() const {return _vertices.size();};
+enum Axis {
+	X,
+	Y,
+	Z
 };
 
 class Shader {
@@ -50,6 +69,48 @@ class Shader {
 		~Shader();
 
 		const GLuint getShader() const {return _shaderProgram;};
+};
+
+class Mesh {
+	private:
+		GLuint _VAO = 0;
+		GLuint _VBO = 0;
+		
+		std::vector<Vertex> _vertices;
+		std::vector<GLuint> _faces;
+
+		Deltas _deltas;
+
+		GLfloat _projection[16] = M_PROJECTION;
+		GLuint _projectionUniform;
+		
+		GLfloat _model[16] = M_MODEL;
+		GLuint _modelUniform;
+		
+		GLfloat _view[16] = M_VIEW;
+		GLuint _viewUniform;
+
+		uint32_t init();
+
+		void rotateX(const float &deltaAngle);
+		void rotateY(const float &deltaAngle);
+		void rotateZ(const float &deltaAngle);
+
+	public:
+		Mesh(const std::vector<Vertex> vertices, const std::vector<GLuint> faces);
+		Mesh() = default;
+		~Mesh();
+
+		const GLuint &getVBO() const {return _VBO;};
+		const GLuint &getVAO() const {return _VAO;};
+		const GLsizei nbFaces() const {return _faces.size();};
+		const GLsizei nbVertices() const {return _vertices.size();};
+
+		void prepare(const Shader &shader);
+
+		void move(const float direction, const Axis axis, const float &deltaTime);
+		void rotate(const float direction, const Axis axis, const float &deltaTime);
+		void show();
 };
 
 class Texture {

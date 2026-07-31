@@ -36,6 +36,8 @@ class Window {
 		Shader _shader;
 		Texture _texture;
 
+		float _deltaTime = 0.0f;
+
 		void init(const int &width, const int &height, const char* title);
 		void gladLoad();
 		void loadMesh(const std::string &path);

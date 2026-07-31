@@ -11,7 +11,6 @@ class Data {
 	private:
 		std::vector<Vertex> _vertex;
 		std::vector<GLuint> _faces;
-		void normalizeVertices();
 
 	public:
 		Data() = default;
@@ -35,6 +34,7 @@ class Data {
 		Vertex getVec(size_t index) const { return _vertex[index];};
 		const std::vector<Vertex> &getVertices() const {return _vertex;};
 		const std::vector<GLuint> &getFaces() const {return _faces;};
+		void normalizeVertices();
 
 		class NoVertex : public std::exception {
 			virtual const char* what() const throw() {

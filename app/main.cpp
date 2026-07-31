@@ -25,6 +25,7 @@ int main(int argc, char const *argv[])
 	catch(const std::exception& e)
 	{
 		std::cerr << e.what() << '\n';
+		return 1;
 	}
 	return 0;
 }
