@@ -6,7 +6,7 @@
 
 #define VERTEX_SHADER_FILE "ressources/shaders/default.vert"
 #define FRAGMENT_SHADER_FILE "ressources/shaders/default.frag"
-#define TEXTURE_FILE "ressources/textures/moumou.png"
+#define TEXTURE_FILE "ressources/textures/emoji.jpg"
 // #define OBJECT_FILE "ressources/objects/."
 
 int main(int argc, char const *argv[])

@@ -13,16 +13,15 @@ float hash(int x) {
     return float(x) / 4294967295.0;
 }
 
-
 void main()
 {
-//	float color;
+	float color;
 
-//	color = hash(gl_PrimitiveID);
+	color = hash(gl_PrimitiveID);
 
-//	vec3 pixel = vec3(color, color, color);
+	vec3 pixel = vec3(color, color, color);
 //	vec3 pixel = vec3(0, 0.7, 0);
 
-//	FragColor = vec4(pixel, 1.0f); // * dt pour fade ou un truc du genre
-	FragColor = texture(ourTexture, TexCoord) ;
+	FragColor = vec4(pixel, 1.0f); // * dt pour fade ou un truc du genre
+//	FragColor = FragColor * (texture(ourTexture, TexCoord) );
 }

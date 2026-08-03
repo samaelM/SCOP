@@ -49,7 +49,7 @@ void Mesh::prepare(const Shader &shader) {
 void Mesh::rotateX(const float &deltaAngle) {
 	const float c = std::cos(deltaAngle);
 	const float s = std::sin(deltaAngle);
-		
+
 	const float deltaR[16] = {
 		1.0f,	0.0f,	0.0f,	0.0f,
 		0.0f,	c,		s,		0.0f,

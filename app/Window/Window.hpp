@@ -42,7 +42,7 @@ class Window {
 		void loadMesh(const std::string &path);
 		void loadTexture(const std::string &path);
 		void loadShaders(const std::string &vertShPath, const std::string &fragShPath);
-		void processInput(GLFWwindow *Window);
+		// void processInput(GLFWwindow *Window);
 
 	public:
 		Window(	const Paramters &param,
@@ -53,6 +53,9 @@ class Window {
 		~Window();
 
 		void start();
+		void moveMesh(const float direction, const Axis axis);
+		static void keyCallbackTrampoline(GLFWwindow* window, int key, int scancode, int action, int mods);
+		void processInput(int key, int scancode, int action, int mods);
 
 		class WindowCreationException : public std::exception {
 			virtual const char* what() const throw() {

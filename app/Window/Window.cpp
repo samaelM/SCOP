@@ -1,61 +1,83 @@
 #include "Window.hpp"
 
-void Window::processInput(GLFWwindow *window)
-{// mettre dans un switch case?
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		std::cout << "should close" << std::endl;
-		glfwSetWindowShouldClose(window, true);
-	}
-	if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	}
-	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS) {
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS) {
-		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-			this->_mesh->rotate(1, Axis::X, this->_deltaTime);
-		}
-		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-			this->_mesh->rotate(-1, Axis::X, this->_deltaTime);
-		}
-		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-			this->_mesh->rotate(1, Axis::Y, this->_deltaTime);
-		}
-		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-			this->_mesh->rotate(-1, Axis::Y, this->_deltaTime);
-		}
-		return;
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
-		if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-			this->_mesh->move(-1, Axis::Z, this->_deltaTime);
-		}
-		if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-			this->_mesh->move(1, Axis::Z, this->_deltaTime);
-		}
-		if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-			this->_mesh->rotate(-1, Axis::Z, this->_deltaTime);
-		}
-		if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-			this->_mesh->rotate(1, Axis::Z, this->_deltaTime);
-		}
-		return;
-	}
-	if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS) {
-		this->_mesh->move(1, Axis::Y, this->_deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS) {
-		this->_mesh->move(-1, Axis::Y, this->_deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-		this->_mesh->move(-1, Axis::X, this->_deltaTime);
-	}
-	if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-		this->_mesh->move(1, Axis::X, this->_deltaTime);
+void Window::moveMesh(const float direction, const Axis axis) {
+	(void) direction;
+	(void) axis;
+}
+
+void Window::keyCallbackTrampoline(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	Window* instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
+    if (instance) {
+        instance->processInput(key, scancode, action, mods);
 	}
 }
 
+void Window::processInput(int key, int scancode, int action, int mods) {
+	(void)scancode;
+	(void)mods;
+	(void)action;
+	switch (key)
+	{
+	case GLFW_KEY_LEFT_CONTROL:
+		break;
+	//
+	case GLFW_KEY_ESCAPE:
+		std::cout << "should close" << std::endl;
+		glfwSetWindowShouldClose(this->_window, true);
+		break;
+	case GLFW_KEY_SPACE:
+		std::cout << "ESPACE" << std::endl;
+		break;
+	case GLFW_KEY_G:
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		break;
+	case GLFW_KEY_F:
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		break;
+	//
+	case GLFW_KEY_LEFT:
+		this->_mesh->move(-1, Axis::X, this->_deltaTime);
+		break;
+	case GLFW_KEY_RIGHT:
+		this->_mesh->move(1, Axis::X, this->_deltaTime);
+		break;
+	case GLFW_KEY_UP:
+ 		this->_mesh->move(1, Axis::Y, this->_deltaTime);
+		break;
+	case GLFW_KEY_DOWN:
+		this->_mesh->move(-1, Axis::Y, this->_deltaTime);
+		break;
+	//
+	case GLFW_KEY_W:
+		this->_mesh->move(-1, Axis::Z, this->_deltaTime);
+		break;
+	case GLFW_KEY_A:
+		this->_mesh->rotate(1, Axis::Z, this->_deltaTime);
+		break;
+	case GLFW_KEY_S:
+		this->_mesh->move(1, Axis::Z, this->_deltaTime);
+		break;
+	case GLFW_KEY_D:
+		this->_mesh->rotate(-1, Axis::Z, this->_deltaTime);
+		break;
+	//
+	case GLFW_KEY_I:
+		this->_mesh->rotate(-1, Axis::X, this->_deltaTime);
+		break;
+	case GLFW_KEY_J:
+		this->_mesh->rotate(1, Axis::Y, this->_deltaTime);
+		break;
+	case GLFW_KEY_K:
+		this->_mesh->rotate(1, Axis::X, this->_deltaTime);
+		break;
+	case GLFW_KEY_L:
+		this->_mesh->rotate(-1, Axis::Y, this->_deltaTime);
+		break;
+	//
+	default:
+		break;
+	}
+}
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
@@ -63,7 +85,6 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-//CLASS MEMBER FUNCTIONS
 Window::Window(	const Paramters &param,
 				const std::string &vertShPath,
 				const std::string &fragShPath,
@@ -93,6 +114,8 @@ void Window::init(const int &width, const int &height, const char* title) {
 
 	glfwMakeContextCurrent(this->_window);
 	glfwSetFramebufferSizeCallback(this->_window, framebuffer_size_callback);
+	glfwSetWindowUserPointer(this->_window, this);
+    glfwSetKeyCallback(this->_window, Window::keyCallbackTrampoline);
 
 	this->gladLoad();
 }
@@ -135,23 +158,13 @@ void Window::start() {
 	std::cout << "App launched!\n";
 	glEnable(GL_DEPTH_TEST);
 
-	// void (*)(GLFWwindow *window, int key, int scancode, int action, int mods)"
-	glfwSetKeyCallback(this->_window, [](GLFWwindow *window, int key, int scancode, int action, int mods){
-		(void)window;
-		(void)scancode;
-		(void)mods;
-		if (key == GLFW_KEY_SPACE and action == GLFW_RELEASE)
-			std::cout <<"space"<<std::endl;
-		});
 	this->_mesh->prepare(this->_shader);
 
 	std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();
 
 	while (!glfwWindowShouldClose(this->_window)) {
 		glfwPollEvents();
-		this->processInput(this->_window);
 
-		//inline func?
 		auto currentTime = std::chrono::steady_clock::now();
 		std::chrono::duration<float> elapsed = currentTime - lastTime;
 		this->_deltaTime = elapsed.count();
