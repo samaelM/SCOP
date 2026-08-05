@@ -65,13 +65,13 @@ void Window::processInput(int key, int scancode, int action, int mods) {
 		this->_mesh->rotate(-1, Axis::X, this->_deltaTime);
 		break;
 	case GLFW_KEY_J:
-		this->_mesh->rotate(1, Axis::Y, this->_deltaTime);
+		this->_mesh->rotate(-1, Axis::Y, this->_deltaTime);
 		break;
 	case GLFW_KEY_K:
 		this->_mesh->rotate(1, Axis::X, this->_deltaTime);
 		break;
 	case GLFW_KEY_L:
-		this->_mesh->rotate(-1, Axis::Y, this->_deltaTime);
+		this->_mesh->rotate(1, Axis::Y, this->_deltaTime);
 		break;
 	//
 	default:
