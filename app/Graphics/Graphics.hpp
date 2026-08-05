@@ -121,10 +121,9 @@ class Texture {
 	private:
 		unsigned char *_textureData;
 		GLuint _texture = 0;
-		void init(const std::string &path);
 
 	public:
-		Texture(const std::string &path);
+		Texture(std::vector<unsigned char> &imageData, GLsizei height, GLsizei width);
 		Texture();
 		~Texture();
 };

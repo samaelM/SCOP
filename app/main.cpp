@@ -6,11 +6,12 @@
 
 #define VERTEX_SHADER_FILE "ressources/shaders/default.vert"
 #define FRAGMENT_SHADER_FILE "ressources/shaders/default.frag"
-#define TEXTURE_FILE "ressources/textures/emoji.jpg"
+#define TEXTURE_FILE "ressources/textures/img.tga"
 // #define OBJECT_FILE "ressources/objects/."
 
 int main(int argc, char const *argv[])
 {
+	(void)argv;
 	if (argc != 2) {
 		// print help
 		return 1;
@@ -18,6 +19,7 @@ int main(int argc, char const *argv[])
 	try
 	{
 		Paramters param({WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE});
+		// Parser::getTextureData(TEXTURE_FILE);
 		Window app(param, VERTEX_SHADER_FILE, FRAGMENT_SHADER_FILE, argv[1], TEXTURE_FILE);
 
 		app.start();

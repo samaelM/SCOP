@@ -3,18 +3,60 @@
 
 #	include <iostream>										//Used to print info on the stdout
 #	include <fstream>										//Used to open files
+#	include <optional>										//Used to make return value optionnal
 
 #	include "../../ressources/lib/glad/include/glad/glad.h"	//Used to find opengl functions and types
 #	include "../Graphics/Graphics.hpp"						//Used for the Mesh, Texture and Shader classes
 
-class Data {
+struct tga_header {
+	const u_int8_t IDLen;
+	const u_int8_t colorMapType;
+	const u_int8_t imageType;
+
+	const u_int16_t imgIndex;
+	const u_int16_t colorMapLen;
+	const u_int8_t colorMapEntrySize;
+
+	const u_int16_t xOrigin;
+	const u_int16_t yOrigin;
+	const u_int16_t imgWidth;
+	const u_int16_t imgHeight;
+	const u_int8_t pixelDepth;
+	const u_int8_t imgDescriptor;
+};
+
+struct tColorRGBA
+{
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+	unsigned char a;
+};
+
+
+static tColorRGBA ParseTGAColor(const unsigned char * pColorData, unsigned int bitsPerColor )
+{
+	tColorRGBA result;
+	switch( bitsPerColor )
+	{ 
+	case 24:
+		result.a = 255;
+		result.r = pColorData[2];
+		result.g = pColorData[1];
+		result.b = pColorData[0];
+		break;
+	}
+	return result;
+}
+
+class MeshData {
 	private:
 		std::vector<Vertex> _vertex;
 		std::vector<GLuint> _faces;
 
 	public:
-		Data() = default;
-		~Data() = default;
+		MeshData() = default;
+		~MeshData() = default;
 
 		void addVertex(Vertex vec) { _vertex.push_back(vec);};
 		void addFace3(GLuint face[3]) {
@@ -43,14 +85,40 @@ class Data {
 		};
 };
 
+class TextureData {
+	private:
+	public:
+		std::vector<unsigned char> _pixels;
+		GLsizei _height;
+		GLsizei _width;
+		TextureData(GLsizei height, GLsizei width) :_height(height), _width(width) {
+			_pixels.resize(height * width * 3);
+			std::cout << std::to_string(height * width) << " |" << std::to_string(height * width * 3) << std::endl;
+		};
+		void fillPixels(const unsigned char *ptr) {
+			size_t index = 0;
+			size_t end = _height * _width;
+
+			while (index < end) {
+				tColorRGBA tga = ParseTGAColor(ptr + index, 24);
+				_pixels.push_back(tga.r);
+				_pixels.push_back(tga.g);
+				_pixels.push_back(tga.b);
+				index += 3;
+			}
+		}
+		~TextureData() = default;
+};
+
 class Parser
 {
 	private:
 		static std::fstream openFile(std::string &fileName);
-		static Data parseFile(std::fstream &file);
+		static MeshData parseMeshFile(std::fstream &file);
 
 	public:
-		static Data getData(std::string fileName);
+		static MeshData getMeshData(std::string fileName);
+		static std::optional<TextureData> getTextureData(std::string fileName);
 		virtual void pure() = 0;
 };
 

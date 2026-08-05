@@ -79,8 +79,7 @@ void Window::processInput(int key, int scancode, int action, int mods) {
 	}
 }
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
-{
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	(void)window;
 	glViewport(0, 0, width, height);
 }
@@ -129,7 +128,7 @@ void Window::gladLoad() {
 }
 
 void Window::loadMesh(const std::string &path) {
-	Data data = Parser::getData(path);
+	MeshData data = Parser::getMeshData(path);
 	data.normalizeVertices();
 	this->_mesh = new Mesh(data.getVertices(), data.getFaces());
 
@@ -140,7 +139,12 @@ void Window::loadMesh(const std::string &path) {
 }
 
 void Window::loadTexture(const std::string &path) {
-	this->_texture = new Texture(path);
+	std::optional<TextureData> optdata = Parser::getTextureData(path);
+	if (!optdata.has_value()) {
+		throw std::out_of_range("data coult not been parsed, aborting");
+	}
+	TextureData &data = optdata.value(); 
+	this->_texture = new Texture(data._pixels, data._height, data._width);
 
 	std::cout << "Successfully loaded Texture in memory ";
 	std::cout << " from file : `" << path << "`" << std::endl;
