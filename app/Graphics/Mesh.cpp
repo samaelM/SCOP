@@ -33,6 +33,7 @@ uint32_t Mesh::init() {
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	this->_VBO = VBO;
+	glDeleteBuffers(1, &EBO);
 	return 1;
 }
 
@@ -158,4 +159,6 @@ void Mesh::show() {
 }
 
 Mesh::~Mesh() {
+	glDeleteBuffers(1, &this->_VBO);
+	glDeleteVertexArrays(1, &this->_VAO);
 }

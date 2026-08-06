@@ -1,5 +1,4 @@
 #include "Graphics.hpp"
-// #include "../utils/utils.hpp"
 
 Shader::Shader(const std::string &vertShPath, const std::string &fragShPath) {
 	this->init();
@@ -15,26 +14,42 @@ void Shader::init() {
 void Shader::addVertexShader(const std::string &path) {
 	const std::string content = load(path);
 	const char *source = content.c_str();
-	// std::cout << source << std::endl;
 	const GLuint shader = glCreateShader(GL_VERTEX_SHADER);
 
 	glShaderSource(shader, 1, &source , NULL);
 	glCompileShader(shader);
-	glAttachShader(this->_shaderProgram, shader);
 
+	int  success;
+	char infoLog[512];
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	if(!success)
+	{
+	    glGetShaderInfoLog(shader, 512, NULL, infoLog);
+	    std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+	}
+
+	glAttachShader(this->_shaderProgram, shader);
 	glDeleteShader(shader);
 }
 
 void Shader::addFragmentShader(const std::string &path) {
 	const std::string content = load(path);
 	const char *source = content.c_str();
-	// std::cout << source << std::endl;
 	const GLuint shader = glCreateShader(GL_FRAGMENT_SHADER);
 
 	glShaderSource(shader, 1, &source , NULL);
 	glCompileShader(shader);
-	glAttachShader(this->_shaderProgram, shader);
 
+	int  success;
+	char infoLog[512];
+	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
+	if(!success)
+	{
+	    glGetShaderInfoLog(shader, 512, NULL, infoLog);
+	    std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+	}
+
+	glAttachShader(this->_shaderProgram, shader);
 	glDeleteShader(shader);
 }
 
@@ -43,5 +58,4 @@ void Shader::link() {
 }
 
 Shader::~Shader() {
-	//delete shader program
 }
