@@ -1,6 +1,4 @@
 #include "Graphics.hpp"
-#define STB_IMAGE_IMPLEMENTATION
-#include "../../ressources/lib/stb_image.h"
 
 Texture::Texture(std::vector<unsigned char> &imageData, GLsizei height, GLsizei width) {
 	glGenTextures(1, &this->_texture);
