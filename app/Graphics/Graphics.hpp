@@ -4,6 +4,7 @@
 #	include <iostream>										//Used to print info on the stdout
 #	include <vector>										//Used to store data in better arrays
 #	include <math.h>										//Used for angles calculation (radians, for matrices)
+#	include <chrono>										//Used to calculate time
 
 #	include "../../ressources/lib/glad/include/glad/glad.h"	//Used to find opengl functions and types
 #	include "../utils/utils.hpp"							//Used for matrix calculus
@@ -81,6 +82,12 @@ class Mesh {
 
 		Deltas _deltas;
 
+		std::chrono::steady_clock::time_point _lastTextureChange;
+		GLuint _texturePercentUniform;
+		GLfloat _texturePercent = 0.0f;
+		bool _textureNeedUpdate = false;
+		bool _moreTexture = false;
+
 		GLfloat _projection[16] = M_PROJECTION;
 		GLuint _projectionUniform;
 		
@@ -111,6 +118,13 @@ class Mesh {
 		GLsizei nbVertices() const {return _vertices.size();};
 
 		void prepare(const Shader &shader);
+
+		void changeTexture() {
+			_lastTextureChange = std::chrono::steady_clock::now();
+			_textureNeedUpdate = true;
+			_moreTexture = !_moreTexture;
+			std::cout << "Changing texture" <<std::endl;
+		}
 
 		void move(const float direction, const Axis axis, const float &deltaTime);
 		void rotate(const float direction, const Axis axis, const float &deltaTime);

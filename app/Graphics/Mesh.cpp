@@ -44,6 +44,8 @@ void Mesh::prepare(const Shader &shader) {
 	this->_modelUniform = glGetUniformLocation(shader.getShader(), "m_model");
 	this->_projectionUniform = glGetUniformLocation(shader.getShader(), "m_projection");
 	this->_viewUniform = glGetUniformLocation(shader.getShader(), "m_view");
+
+	this->_texturePercentUniform = glGetUniformLocation(shader.getShader(), "texturePercent");
 }
 
 void Mesh::rotateX(const float &deltaAngle) {
@@ -137,6 +139,22 @@ void Mesh::show() {
 	glUniformMatrix4fv(this->_modelUniform, 1, GL_FALSE, this->_model);
 	glUniformMatrix4fv(this->_viewUniform, 1, GL_FALSE, this->_view);
 	glUniformMatrix4fv(this->_projectionUniform, 1, GL_FALSE, this->_projection);
+
+	if (this->_textureNeedUpdate) {
+		float factor = (this->_moreTexture? 1.0f:-1.0f);
+		std::chrono::duration<float> elapsed = this->_lastTextureChange - std::chrono::steady_clock::now();
+		this->_texturePercent += elapsed.count() * factor;
+		if (this->_texturePercent > 1.0f) {
+			this->_texturePercent = 1.0f;
+			this->_textureNeedUpdate = false;
+		}
+		else if (this->_texturePercent < 0.0f) {
+			this->_texturePercent = 0.0f;
+			this->_textureNeedUpdate = false;
+		}
+		std::cout << this->_texturePercent << std::endl;
+	}
+	glUniform1f(this->_texturePercentUniform, this->_texturePercent);
 }
 
 Mesh::~Mesh() {

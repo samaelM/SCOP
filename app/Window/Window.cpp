@@ -26,7 +26,8 @@ void Window::processInput(int key, int scancode, int action, int mods) {
 		glfwSetWindowShouldClose(this->_window, true);
 		break;
 	case GLFW_KEY_SPACE:
-		std::cout << "ESPACE" << std::endl;
+		if (action == GLFW_RELEASE)
+			this->_mesh->changeTexture();
 		break;
 	case GLFW_KEY_G:
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -167,6 +168,7 @@ void Window::start() {
 	this->_mesh->prepare(this->_shader);
 
 	std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();
+	this->_mesh->changeTexture();
 
 	while (!glfwWindowShouldClose(this->_window)) {
 		glfwPollEvents();
