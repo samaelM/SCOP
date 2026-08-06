@@ -111,13 +111,13 @@ void Mesh::move(const float direction, const Axis axis, const float &deltaTime) 
 	switch (axis)
 	{
 	case Axis::X:
-		this->_deltas.position[0] += direction * 0.01;
+		this->_deltas.position[0] += direction * 0.05;
 		break;
 	case Axis::Y:
-		this->_deltas.position[1] += direction * 0.01;
+		this->_deltas.position[1] += direction * 0.05;
 		break;
 	case Axis::Z:
-		this->_deltas.position[2] += direction * 0.01;
+		this->_deltas.position[2] += direction * 0.05;
 		break;
 	
 	default:

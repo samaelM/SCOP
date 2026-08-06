@@ -25,30 +25,6 @@ struct tga_header {
 	const u_int8_t imgDescriptor;
 };
 
-struct tColorRGBA
-{
-	unsigned char r;
-	unsigned char g;
-	unsigned char b;
-	unsigned char a;
-};
-
-
-static tColorRGBA ParseTGAColor(const unsigned char * pColorData, unsigned int bitsPerColor )
-{
-	tColorRGBA result;
-	switch( bitsPerColor )
-	{ 
-	case 24:
-		result.a = 255;
-		result.r = pColorData[2];
-		result.g = pColorData[1];
-		result.b = pColorData[0];
-		break;
-	}
-	return result;
-}
-
 class MeshData {
 	private:
 		std::vector<Vertex> _vertex;
@@ -92,18 +68,17 @@ class TextureData {
 		GLsizei _height;
 		GLsizei _width;
 		TextureData(GLsizei height, GLsizei width) :_height(height), _width(width) {
-			_pixels.resize(height * width * 3);
-			std::cout << std::to_string(height * width) << " |" << std::to_string(height * width * 3) << std::endl;
+			_pixels.reserve(height * width * 3);
+			std::cout << std::to_string(height * width) << " | " << std::to_string(height * width * 3) << std::endl;
 		};
 		void fillPixels(const unsigned char *ptr) {
 			size_t index = 0;
-			size_t end = _height * _width;
+			size_t end = _height * _width * 3;
 
 			while (index < end) {
-				tColorRGBA tga = ParseTGAColor(ptr + index, 24);
-				_pixels.push_back(tga.r);
-				_pixels.push_back(tga.g);
-				_pixels.push_back(tga.b);
+				_pixels.push_back(*(ptr + index + 2));
+				_pixels.push_back(*(ptr + index + 1));
+				_pixels.push_back(*(ptr + index));
 				index += 3;
 			}
 		}

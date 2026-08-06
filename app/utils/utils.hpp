@@ -3,6 +3,7 @@
 #	include <iostream>		//Used to print info on the stdout
 #	include <fstream>		//Used to open files
 #	include <string.h>		//Used for memset
+#	define ERRNOF std::cout << std::to_string(errno) << std::endl
 
 inline std::string load(std::string fileName) {
 	std::fstream f = std::fstream(fileName);
