@@ -157,6 +157,20 @@ std::fstream Parser::openFile(std::string &fileName) {
 	return std::fstream(fileName);
 }
 
+// void printHeader(const tga_header &header) {
+// 	std::cout << "IDLen: " << std::to_string(int(header.IDLen)) << std::endl;
+// 	std::cout << "colorMapType: " << std::to_string(int(header.colorMapType)) << std::endl;
+// 	std::cout << "imageType: " << std::to_string(int(header.imageType))	<< std::endl;
+// 	std::cout << "imgIndex: " << std::to_string(int(header.imgIndex)) << std::endl;
+// 	std::cout << "colorMapLen: " << std::to_string(int(header.colorMapLen)) << std::endl;
+// 	std::cout << "colorMapEntrySize: " << std::to_string(int(header.colorMapEntrySize)) << std::endl;
+// 	std::cout << "xOrigin: " << std::to_string(int(header.xOrigin)) << std::endl;
+// 	std::cout << "yOrigin: " << std::to_string(int(header.yOrigin)) << std::endl;
+// 	std::cout << "imgWidth: " << std::to_string(int(header.imgWidth)) << std::endl;
+// 	std::cout << "imgHeight: " << std::to_string(int(header.imgHeight)) << std::endl;
+// 	std::cout << "pixelDepth: " << std::to_string(int(header.pixelDepth)) << std::endl;
+// 	std::cout << "imgDescriptor: " << std::to_string(int(header.imgDescriptor)) << std::endl;
+// }
 
 std::optional<TextureData> Parser::getTextureData(std::string fileName) {
 	std::ifstream file(fileName, std::ios::binary | std::ios::ate);
@@ -193,7 +207,9 @@ std::optional<TextureData> Parser::getTextureData(std::string fileName) {
 		static_cast<u_int8_t>	(raw[17])
 	};
 
-	if (header_data.imageType != 2 or header_data.pixelDepth != 24) {
+	if (header_data.imageType != 2 or
+		header_data.pixelDepth != 24 or
+		header_data.colorMapLen != 0) {
 		throw Parser::UnsupportedFile();
 	}
 

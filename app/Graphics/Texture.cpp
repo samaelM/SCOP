@@ -9,14 +9,12 @@ Texture::Texture(std::vector<unsigned char> &imageData, GLsizei height, GLsizei 
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	this->_textureData = imageData.data();
-	std::cout << std::to_string(imageData.size()) << " " << std::to_string(height * width *3) << std::endl;
-	if (this->_textureData)
-	{
+	if (this->_textureData) {
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, this->_textureData);
 		std::cout << "texture loaded!" << std::to_string(errno) << std::endl;
 	}
-	else
-	{//+THROW
+	else {
 		std::cout << "Failed to load texture" << std::endl;
 	} 
 }
@@ -26,5 +24,4 @@ Texture::Texture() {
 }
 
 Texture::~Texture() {
-	free(this->_textureData);
 }

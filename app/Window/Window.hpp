@@ -32,8 +32,8 @@ class Window {
 	private:
 		GLFWwindow* _window = NULL;
 		Mesh *_mesh = NULL;
+		Texture *_texture = NULL;
 		Shader _shader;
-		Texture *_texture;
 
 		float _deltaTime = 0.0f;
 
@@ -42,7 +42,6 @@ class Window {
 		void loadMesh(const std::string &path);
 		void loadTexture(const std::string &path);
 		void loadShaders(const std::string &vertShPath, const std::string &fragShPath);
-		// void processInput(GLFWwindow *Window);
 
 	public:
 		Window(	const Paramters &param,

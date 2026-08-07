@@ -29,3 +29,19 @@ Press ESC to close the program.
 <h5>AI USAGE</h5>
 
 AI (gemini by Google) was mostly used to help me understand the maths (matrices) and some complex opengl API/graphical notions. It was also occasionally used to help me debug code. No code was directly copy paste from the ai. This code is mine (witten by me) and i undestand it (or at least I did when writing it) perfectly.
+
+
+IDLen: 0
+colorMapType: 0
+imageType: 2
+imgIndex: 0
+colorMapLen: 0
+colorMapEntrySize: 0
+xOrigin: 0
+yOrigin: 0
+imgWidth: 960
+imgHeight: 1200
+pixelDepth: 24
+imgDescriptor: 32
+1152000 | 3456000
+3456000 3456000

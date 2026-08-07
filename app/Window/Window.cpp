@@ -20,8 +20,8 @@ void Window::processInput(int key, int scancode, int action, int mods) {
 	{
 	case GLFW_KEY_LEFT_CONTROL:
 		break;
-	//
-	case GLFW_KEY_ESCAPE:
+
+		case GLFW_KEY_ESCAPE:
 		std::cout << "should close" << std::endl;
 		glfwSetWindowShouldClose(this->_window, true);
 		break;
@@ -35,8 +35,8 @@ void Window::processInput(int key, int scancode, int action, int mods) {
 	case GLFW_KEY_F:
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		break;
-	//
-	case GLFW_KEY_LEFT:
+
+		case GLFW_KEY_LEFT:
 		this->_mesh->move(-1, Axis::X, this->_deltaTime);
 		break;
 	case GLFW_KEY_RIGHT:
@@ -48,8 +48,8 @@ void Window::processInput(int key, int scancode, int action, int mods) {
 	case GLFW_KEY_DOWN:
 		this->_mesh->move(-1, Axis::Y, this->_deltaTime);
 		break;
-	//
-	case GLFW_KEY_W:
+
+		case GLFW_KEY_W:
 		this->_mesh->move(-1, Axis::Z, this->_deltaTime);
 		break;
 	case GLFW_KEY_A:
@@ -61,8 +61,8 @@ void Window::processInput(int key, int scancode, int action, int mods) {
 	case GLFW_KEY_D:
 		this->_mesh->rotate(-1, Axis::Z, this->_deltaTime);
 		break;
-	//
-	case GLFW_KEY_I:
+
+		case GLFW_KEY_I:
 		this->_mesh->rotate(-1, Axis::X, this->_deltaTime);
 		break;
 	case GLFW_KEY_J:
@@ -74,8 +74,8 @@ void Window::processInput(int key, int scancode, int action, int mods) {
 	case GLFW_KEY_L:
 		this->_mesh->rotate(1, Axis::Y, this->_deltaTime);
 		break;
-	//
-	default:
+
+		default:
 		break;
 	}
 }
@@ -196,6 +196,9 @@ void Window::start() {
 Window::~Window(){
 	if (this->_window)
 		glfwDestroyWindow(this->_window);
-	delete this->_mesh;
+	if (this->_mesh)
+		delete this->_mesh;
+	if (this->_texture)
+		delete this->_texture;
 	glfwTerminate();
 }

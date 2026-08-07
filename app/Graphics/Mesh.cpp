@@ -153,7 +153,6 @@ void Mesh::show() {
 			this->_texturePercent = 0.0f;
 			this->_textureNeedUpdate = false;
 		}
-		std::cout << this->_texturePercent << std::endl;
 	}
 	glUniform1f(this->_texturePercentUniform, this->_texturePercent);
 }
