@@ -40,7 +40,7 @@ RETURN				=	\033[2K\r
 #RULES
 ${NAME}:all
 
-all: ${GLAD} ${OBJS}
+all: lib ${GLAD} ${OBJS}
 	@printf "${RETURN}${RED}[COMPILING 🛞 ]${WHITE}${NAME} :"
 	@${CC} $(CFLAGS) ${OBJS} ${GLAD} -o ${NAME}
 	@printf "${RETURN}${GREEN}[DONE! ✅]${WHITE}${NAME}\n"
@@ -50,6 +50,9 @@ all: ${GLAD} ${OBJS}
 	@printf "   /\/\ \n"
 	@printf "  ( ${FLASH}o${RED}${BOLD}w${FLASH}o${RED}${BOLD})\n"
 	@printf "  / >*<\ \n"
+
+lib:
+	bash ./setup.sh
 
 ${OBJS_DIR}/%.o: %.cpp
 	@mkdir -p ${dir $@}
@@ -74,4 +77,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re lib
