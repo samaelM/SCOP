@@ -13,11 +13,18 @@ To compile and execute, simply use those commands:
 make all # will install all dependencies and compile the source code
 ./SCOP
 ```
+When program is launched, used arrow keys, wasd, and ijkl keys to move and rotate the mesh around it's 3 axis
+
+Press G to show the lines of the mesh, press F to return to faces. Press SPACE to alternate between texture and colors.
+
+Press ESC to close the program.
 
 <h1>Resources</h1>
 
 - https://learnopengl.com/
 - https://www.youtube.com/playlist?list=PLPaoO-vpZnumdcb4tZc4x5Q-v7CkrQ6M-
+- https://www.ryanjuckett.com/parsing-colors-in-a-tga-file/
+
 
 <h5>AI USAGE</h5>
 
