@@ -95,6 +95,23 @@ class Parser
 		static MeshData getMeshData(std::string fileName);
 		static std::optional<TextureData> getTextureData(std::string fileName);
 		virtual void pure() = 0;
+
+		class IncorectData : public std::exception {
+			private:
+			std::string _msg;
+			public:
+			IncorectData(unsigned long linenb, std::string line){
+				_msg = "file has incorrect data at line " + std::to_string(linenb) + ": " + line;
+			}
+			virtual const char* what() const throw() {
+				return _msg.c_str();
+			}
+		};
+		class UnsupportedFile : public std::exception {
+			virtual const char* what() const throw() {
+				return ("file is not supported");
+			}
+		};
 };
 
 #endif

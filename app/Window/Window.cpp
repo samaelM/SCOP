@@ -7,8 +7,8 @@ void Window::moveMesh(const float direction, const Axis axis) {
 
 void Window::keyCallbackTrampoline(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	Window* instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
-    if (instance) {
-        instance->processInput(key, scancode, action, mods);
+	if (instance) {
+		instance->processInput(key, scancode, action, mods);
 	}
 }
 
@@ -117,7 +117,7 @@ void Window::init(const int &width, const int &height, const char* title) {
 	glfwMakeContextCurrent(this->_window);
 	glfwSetFramebufferSizeCallback(this->_window, framebuffer_size_callback);
 	glfwSetWindowUserPointer(this->_window, this);
-    glfwSetKeyCallback(this->_window, Window::keyCallbackTrampoline);
+	glfwSetKeyCallback(this->_window, Window::keyCallbackTrampoline);
 
 	this->gladLoad();
 }
@@ -144,7 +144,7 @@ void Window::loadMesh(const std::string &path) {
 void Window::loadTexture(const std::string &path) {
 	std::optional<TextureData> optdata = Parser::getTextureData(path);
 	if (!optdata.has_value()) {
-		throw std::out_of_range("data coult not been parsed, aborting");
+		throw std::invalid_argument("data coult not been parsed, aborting");
 	}
 	TextureData &data = optdata.value(); 
 	this->_texture = new Texture(data._pixels, data._height, data._width);

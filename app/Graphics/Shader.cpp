@@ -24,8 +24,8 @@ void Shader::addVertexShader(const std::string &path) {
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if(!success)
 	{
-	    glGetShaderInfoLog(shader, 512, NULL, infoLog);
-	    std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+		glGetShaderInfoLog(shader, 512, NULL, infoLog);
+		std::cerr << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 
 	glAttachShader(this->_shaderProgram, shader);
@@ -45,8 +45,8 @@ void Shader::addFragmentShader(const std::string &path) {
 	glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
 	if(!success)
 	{
-	    glGetShaderInfoLog(shader, 512, NULL, infoLog);
-	    std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
+		glGetShaderInfoLog(shader, 512, NULL, infoLog);
+		std::cerr << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
 	}
 
 	glAttachShader(this->_shaderProgram, shader);

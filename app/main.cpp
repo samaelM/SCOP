@@ -6,9 +6,7 @@
 
 #define VERTEX_SHADER_FILE "ressources/shaders/default.vert"
 #define FRAGMENT_SHADER_FILE "ressources/shaders/default.frag"
-// #define TEXTURE_FILE "ressources/textures/img.tga"
 #define HELP "usage: ./SCOP mesh.obj texture.tga\n"
-// #define OBJECT_FILE "ressources/objects/."
 
 int main(int argc, char const *argv[])
 {

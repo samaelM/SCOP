@@ -14,7 +14,6 @@ void MeshData::normalizeVertices() {
 		throw NoVertex();
 	}
 
-	// 1. Correct Initialization
 	GLfloat minX = _vertex[0].position[0], maxX = _vertex[0].position[0];
 	GLfloat minY = _vertex[0].position[1], maxY = _vertex[0].position[1];
 	GLfloat minZ = _vertex[0].position[2], maxZ = _vertex[0].position[2];
@@ -25,19 +24,17 @@ void MeshData::normalizeVertices() {
 		minZ = std::min(minZ, v.position[2]); maxZ = std::max(maxZ, v.position[2]);
 	}
 
-	// 2. Correct Centering
 	GLfloat centerX = (minX + maxX) / 2.0f;
 	GLfloat centerY = (minY + maxY) / 2.0f;
 	GLfloat centerZ = (minZ + maxZ) / 2.0f;
 
-	// 3. Correct Scaling
 	GLfloat dx = maxX - minX;
 	GLfloat dy = maxY - minY;
 	GLfloat dz = maxZ - minZ;
 		
-	// Avoid division by zero for flat objects
 	GLfloat extent = std::max(dx, std::max(dy, dz));
-	if (extent == 0.0f) return; 
+	if (extent == 0.0f)
+		return; 
 		
 	GLfloat scale = 2.0f / extent;
 
@@ -82,40 +79,75 @@ std::string printTab(std::vector<std::string> tab) {
 	return str;
 }
 
+static void sanitize(std::string &line) {
+	std::string result;
+
+	for (std::string::iterator it  = line.begin(); it < line.end(); it++) {
+		result += *it;
+		if (isblank(*it)) {
+			std::string::iterator next = it+1;
+			while (*next and (isblank(*next) or !isprint(*next))) {
+				next++;
+				it++;
+			}
+		}
+	}
+	line = result;
+}
+
 MeshData Parser::parseMeshFile(std::fstream &file) {
 	MeshData data;
 	std::string line;
+	unsigned long linenb = 0;
 	std::vector<std::string> elements; 
 	Vertex vert;
+
 	if (!file.good()) {
-		throw std::out_of_range("file pas bon");
+		throw std::invalid_argument("Mesh file could not be opened");
 	}
+
 	while (file.good()) {
+		linenb++;
 		getline(file, line);
+		sanitize(line);
 		elements = split(line, " ");
 		if (elements[0].compare("v") == 0) {
-			if (elements[0].empty() or elements[1].empty() or elements[2].empty() or elements[3].empty()) {
-				throw std::out_of_range("not enough coordinates :" + printTab(elements));
+			if (elements.size() != 4) {
+				throw Parser::IncorectData(linenb, line);
 			}
-			GLfloat tab[3] = {std::stof(elements[1]), std::stof(elements[2]), std::stof(elements[3])};
+			GLfloat tab[3];
+			try {
+				tab[0] = std::stof(elements[1]);
+				tab[1] = std::stof(elements[2]);
+				tab[2] = std::stof(elements[3]);
+			}
+			catch(const std::exception& e) {
+				throw Parser::IncorectData(linenb, line);
+			}
+			
 			memcpy(vert.position, tab, sizeof(GLfloat) * 3);
 			data.addVertex(vert);
 		}
 		else if (elements[0].compare("f") == 0) {
+			if (elements.size() < 4 or elements.size() > 5)
+				throw Parser::IncorectData(linenb, line);
 			std::vector<GLuint> face;
 			size_t i;
-			for (i = 1; i < elements.size(); i++)
-			{
-				face.push_back(std::stoul(elements[i]) - 1);
+
+			for (i = 1; i < elements.size(); i++) {
+				unsigned long number;
+				number = std::stoul(elements[i]);
+				if (number > UINT32_MAX)
+					throw Parser::IncorectData(linenb, line);
+				face.push_back(number - 1);
 			}
+
 			if (i == 4)
 				data.addFace3(face.data());
 			else if (i == 5)
 				data.addFace4(face.data());
 			else
-				throw std::out_of_range("too much coordinates");
-		}
-		else {
+				throw Parser::IncorectData(linenb, line);
 		}
 	}
 	return (data);
@@ -129,21 +161,18 @@ std::fstream Parser::openFile(std::string &fileName) {
 std::optional<TextureData> Parser::getTextureData(std::string fileName) {
 	std::ifstream file(fileName, std::ios::binary | std::ios::ate);
 	if (!file.is_open()) {
-		std::cout << "could not open file" << std::endl;
-		return std::nullopt;
+		throw std::invalid_argument("Texture file could not be opened");
 	}
 
 	std::streamsize fileSize = file.tellg();
 	if (fileSize < 18) {
-		std::cout << "file is not big enough" << std::endl;
-		return std::nullopt;
+		throw std::invalid_argument("Texture file is incorrect");
 	}
 
 	file.seekg(0, std::ios::beg);
 	std::vector<u_int8_t> buffer(fileSize);
 	if (!file.read(reinterpret_cast<char*>(buffer.data()), fileSize)) {
-		std::cout << "could not read file" << std::endl;
-		return std::nullopt;
+		throw std::invalid_argument("a problem happened while reading file");
 	}
 	const u_int8_t*raw = buffer.data();
 
@@ -165,8 +194,7 @@ std::optional<TextureData> Parser::getTextureData(std::string fileName) {
 	};
 
 	if (header_data.imageType != 2 or header_data.pixelDepth != 24) {
-		std::cout << "Non supported tga file" << std::endl;
-		return std::nullopt;
+		throw Parser::UnsupportedFile();
 	}
 
 	const unsigned long imgIndex = 18 + header_data.IDLen;

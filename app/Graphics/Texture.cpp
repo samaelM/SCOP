@@ -17,7 +17,7 @@ Texture::Texture(std::vector<unsigned char> &imageData, GLsizei height, GLsizei 
 	}
 	else
 	{//+THROW
-	    std::cout << "Failed to load texture" << std::endl;
+		std::cout << "Failed to load texture" << std::endl;
 	} 
 }
 

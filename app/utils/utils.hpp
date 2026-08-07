@@ -8,7 +8,7 @@
 inline std::string load(std::string fileName) {
 	std::fstream f = std::fstream(fileName);
 	if (!f.is_open()) {
-		throw std::out_of_range("file could not be open"); //change error
+		throw std::invalid_argument("Shader file could not be open"); //change error
 	}
 	std::string content;
 	std::string line;
