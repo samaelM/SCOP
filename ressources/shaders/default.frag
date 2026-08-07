@@ -8,10 +8,10 @@ uniform sampler2D ourTexture;
 uniform float texturePercent;
 
 float hash(int x) {
-    x = ((x >> 16) ^ x) * 0x45d9f3b;
-    x = ((x >> 16) ^ x) * 0x45d9f3b;
-    x = (x >> 16) ^ x;
-    return float(x) / 4294967295.0;
+	x = ((x >> 16) ^ x) * 0x45d9f3b;
+	x = ((x >> 16) ^ x) * 0x45d9f3b;
+	x = (x >> 16) ^ x;
+	return float(x) / 4294967295.0;
 }
 
 void main()
@@ -21,7 +21,10 @@ void main()
 	color = hash(gl_PrimitiveID);
 
 	vec3 pixel = vec3(color, color, color);
+//	vec3 pixel = vec3(0, 0.7, 0);
 
 	FragColor = vec4(pixel, 1.0f);
 	FragColor = (FragColor * (1 - texturePercent)) + (texture(ourTexture, TexCoord) * texturePercent);
+//	FragColor = (texture(ourTexture, TexCoord));
+
 }
