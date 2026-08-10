@@ -15,14 +15,11 @@ void Window::keyCallbackTrampoline(GLFWwindow* window, int key, int scancode, in
 void Window::processInput(int key, int scancode, int action, int mods) {
 	(void)scancode;
 	(void)mods;
-	(void)action;
 	switch (key)
 	{
 	case GLFW_KEY_LEFT_CONTROL:
 		break;
-
-		case GLFW_KEY_ESCAPE:
-		std::cout << "should close" << std::endl;
+	case GLFW_KEY_ESCAPE:
 		glfwSetWindowShouldClose(this->_window, true);
 		break;
 	case GLFW_KEY_SPACE:
@@ -36,7 +33,7 @@ void Window::processInput(int key, int scancode, int action, int mods) {
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		break;
 
-		case GLFW_KEY_LEFT:
+	case GLFW_KEY_LEFT:
 		this->_mesh->move(-1, Axis::X, this->_deltaTime);
 		break;
 	case GLFW_KEY_RIGHT:
@@ -49,7 +46,7 @@ void Window::processInput(int key, int scancode, int action, int mods) {
 		this->_mesh->move(-1, Axis::Y, this->_deltaTime);
 		break;
 
-		case GLFW_KEY_W:
+	case GLFW_KEY_W:
 		this->_mesh->move(-1, Axis::Z, this->_deltaTime);
 		break;
 	case GLFW_KEY_A:
@@ -62,7 +59,7 @@ void Window::processInput(int key, int scancode, int action, int mods) {
 		this->_mesh->rotate(-1, Axis::Z, this->_deltaTime);
 		break;
 
-		case GLFW_KEY_I:
+	case GLFW_KEY_I:
 		this->_mesh->rotate(-1, Axis::X, this->_deltaTime);
 		break;
 	case GLFW_KEY_J:
@@ -75,7 +72,7 @@ void Window::processInput(int key, int scancode, int action, int mods) {
 		this->_mesh->rotate(1, Axis::Y, this->_deltaTime);
 		break;
 
-		default:
+	default:
 		break;
 	}
 }
@@ -154,7 +151,7 @@ void Window::loadTexture(const std::string &path) {
 }
 
 void Window::loadShaders(const std::string &vertShPath, const std::string &fragShPath) {
-	this->_shader = Shader(vertShPath, fragShPath);
+	this->_shader = new Shader(vertShPath, fragShPath);
 
 	std::cout << "Successfully loaded Shaders in memory ";
 	std::cout << " from files : `" << vertShPath << "` and `";
@@ -165,7 +162,7 @@ void Window::start() {
 	std::cout << "App launched!\n";
 	glEnable(GL_DEPTH_TEST);
 
-	this->_mesh->prepare(this->_shader);
+	this->_mesh->prepare(*this->_shader);
 
 	std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();
 	this->_mesh->changeTexture();
@@ -182,7 +179,7 @@ void Window::start() {
 
 		glClearColor(0.3f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glUseProgram(this->_shader.getShader());
+		glUseProgram(this->_shader->getShader());
 
 		this->_mesh->show();
 
@@ -200,5 +197,7 @@ Window::~Window(){
 		delete this->_mesh;
 	if (this->_texture)
 		delete this->_texture;
+	if (this->_shader)
+		delete this->_shader;
 	glfwTerminate();
 }

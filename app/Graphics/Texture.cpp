@@ -24,4 +24,5 @@ Texture::Texture() {
 }
 
 Texture::~Texture() {
+	glDeleteTextures(1, &this->_texture);
 }

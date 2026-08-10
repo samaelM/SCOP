@@ -58,4 +58,5 @@ void Shader::link() {
 }
 
 Shader::~Shader() {
+	glDeleteProgram(this->_shaderProgram);
 }

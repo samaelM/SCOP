@@ -45,11 +45,6 @@ void MeshData::normalizeVertices() {
 	}
 }
 
-MeshData Parser::getMeshData(std::string fileName) {
-	std::fstream f = openFile(fileName);
-	return parseMeshFile(f);
-}
-
 std::vector<std::string> split(std::string s, const std::string& delimiter) {
 	std::vector<std::string> tokens;
 	size_t pos = 0;
@@ -95,13 +90,14 @@ static void sanitize(std::string &line) {
 	line = result;
 }
 
-MeshData Parser::parseMeshFile(std::fstream &file) {
+MeshData Parser::getMeshData(std::string fileName) {
 	MeshData data;
 	std::string line;
 	unsigned long linenb = 0;
 	std::vector<std::string> elements; 
 	Vertex vert;
 
+	std::fstream file(fileName);
 	if (!file.good()) {
 		throw std::invalid_argument("Mesh file could not be opened");
 	}
@@ -151,10 +147,6 @@ MeshData Parser::parseMeshFile(std::fstream &file) {
 		}
 	}
 	return (data);
-}
-
-std::fstream Parser::openFile(std::string &fileName) {
-	return std::fstream(fileName);
 }
 
 // void printHeader(const tga_header &header) {

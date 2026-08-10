@@ -33,7 +33,7 @@ class Window {
 		GLFWwindow* _window = NULL;
 		Mesh *_mesh = NULL;
 		Texture *_texture = NULL;
-		Shader _shader;
+		Shader *_shader = NULL;
 
 		float _deltaTime = 0.0f;
 

@@ -87,10 +87,6 @@ class TextureData {
 
 class Parser
 {
-	private:
-		static std::fstream openFile(std::string &fileName);
-		static MeshData parseMeshFile(std::fstream &file);
-
 	public:
 		static MeshData getMeshData(std::string fileName);
 		static std::optional<TextureData> getTextureData(std::string fileName);
