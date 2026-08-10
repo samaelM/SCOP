@@ -1,80 +1,82 @@
-NAME				=	SCOP
+NAME			:=	SCOP
 
-CC					=	c++
-CFLAGS				=	-Wall -Werror -Wextra -g3 -I ressources/lib/glad/include -lglfw 
-CFLAGS_TEMP			=	-g3 -I ressources/lib/glad/include -lglfw 
+CXX				:=	c++
+CC				:=	cc
+AR				:=	ar rcs
+RM				:=	rm -rf
 
-INCS				=	app/Graphics/Graphics.hpp\
-						app/Parser/Parser.hpp\
-						app/Window/Window.hpp\
-						app/utils/utils.hpp\
-						ressources/lib/glad/include/glad/glad.h\
+INC_DIR			:=	app ressources/lib/glad/include
+OBJ_DIR			:=	obj
 
-SRCS				=	app/main.cpp\
-						app/Window/Window.cpp\
-						app/Parser/Parser.cpp\
-						app/Graphics/Mesh.cpp\
-						app/Graphics/Shader.cpp\
-						app/Graphics/Texture.cpp
+CXXFLAGS		:=	-Wall -Werror -Wextra -std=c++17 -g3 $(addprefix -I, $(INC_DIR)) -MMD -MP
+CFLAGS			:=	-Wall -Werror -Wextra -g3 $(addprefix -I, $(INC_DIR)) -MMD -MP
+LDLIBS			:=	-lglfw
 
+SRCS			:=	app/main.cpp \
+					app/Window/Window.cpp \
+					app/Parser/Parser.cpp \
+					app/Graphics/Mesh.cpp \
+					app/Graphics/Shader.cpp \
+					app/Graphics/Texture.cpp
 
-OBJS_DIR			=	obj
-OBJS				=	${SRCS:%.cpp=${OBJS_DIR}/%.o}
+GLAD_SRC		:=	ressources/lib/glad/src/glad.c
 
-GLAD				=	${OBJS_DIR}/ressources/lib/glad/libglad.a
+OBJS			:=	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)
+OBJ_GLAD		:=	$(GLAD_SRC:%.c=$(OBJ_DIR)/%.o)
+DEPS			:=	$(OBJS:%.o=%.d) $(OBJ_GLAD:%.o=%.d)
 
-SRCS_GLAD			=	ressources/lib/glad/src/glad.c
-OBJS_GLAD			=	${SRCS_GLAD:%.c=${OBJS_DIR}/%.o}
+GLAD_LIB		:=	$(OBJ_DIR)/ressources/lib/glad/libglad.a
 
-#COLORS
-RED					=	\033[0;31m
-GREEN				=	\033[0;32m
-YELLOW				=	\033[0;33m
-WHITE				=	\033[0m
-BOLD				=	\033[1m
-FLASH				=	\033[6m
-RESET				=	\033[0m
-BANDE				=	\033[7m
-RETURN				=	\033[2K\r
+RED				:=	\033[0;31m
+GREEN			:=	\033[0;32m
+YELLOW			:=	\033[0;33m
+WHITE			:=	\033[0m
+BOLD			:=	\033[1m
+FLASH			:=	\033[6m
+RETURN			:=	\033[2K\r
 
-#RULES
-${NAME}:all
+all: $(NAME)
 
-all: lib ${GLAD} ${OBJS}
-	@printf "${RETURN}${RED}[COMPILING 🛞 ]${WHITE}${NAME} :"
-	@${CC} $(CFLAGS) ${OBJS} ${GLAD} -o ${NAME}
-	@printf "${RETURN}${GREEN}[DONE! ✅]${WHITE}${NAME}\n"
-	@printf "${RED}${BOLD}   ____________  \n"
+$(NAME): $(OBJS) $(GLAD_LIB)
+	@printf "$(RETURN)$(RED)[LINKING 🛞 ]$(WHITE) $@ :"
+	@$(CXX) $(CXXFLAGS) $(OBJS) $(GLAD_LIB) $(LDLIBS) -o $@
+	@printf "$(RETURN)$(GREEN)[DONE! ✅]$(WHITE) $@\n"
+	@printf "$(RED)$(BOLD)   ____________  \n"
 	@printf "  (  COMPILED! ) \n"
 	@printf "    ͞ v ͞ ͞ ͞ ͞ ͞ ͞ ͞ ͞ \n"
-	@printf "   /\/\ \n"
-	@printf "  ( ${FLASH}o${RED}${BOLD}w${FLASH}o${RED}${BOLD})\n"
-	@printf "  / >*<\ \n"
+	@printf "   /\\/\\ \n"
+	@printf "  ( $(FLASH)o$(RED)$(BOLD)w$(FLASH)o$(RED)$(BOLD))\n"
+	@printf "  / >*<\\ \n$(RESET)"
 
-lib:
-	bash ./setup.sh
+$(GLAD_SRC):
+	@bash ./setup.sh
 
-${OBJS_DIR}/%.o: %.cpp
-	@mkdir -p ${dir $@}
-	@printf "${RETURN}${RED}[COMPILING 🛞 ]${WHITE}$< :"
-	@${CC} $(CFLAGS) -c -o $@ $<
-	@printf "${RETURN}${GREEN}[DONE! ✅]${WHITE}$< -> $@\n"
+$(GLAD_LIB): $(GLAD_SRC) $(OBJ_GLAD)
+	@mkdir -p $(dir $@)
+	@$(AR) $@ $(OBJ_GLAD)
 
-${GLAD}: ${OBJS_GLAD}
-	ar -rc ${GLAD} ${OBJS_GLAD}
+$(OBJ_DIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
+	@printf "$(RETURN)$(RED)[COMPILING 🛞 ]$(WHITE) $< :"
+	@$(CXX) $(CXXFLAGS) -c $< -o $@
+	@printf "$(RETURN)$(GREEN)[DONE! ✅]$(WHITE) $< -> $@\n"
 
-${OBJS_DIR}/%.o: %.c
-	@mkdir -p ${dir $@}
-	@printf "${RETURN}${RED}[COMPILING 🛞 ]${WHITE}$< :"
-	@${CC} $(CFLAGS) -c -o $@ $<
-	@printf "${RETURN}${GREEN}[DONE! ✅]${WHITE}$< -> $@\n"
+$(OBJ_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
+	@printf "$(RETURN)$(RED)[COMPILING 🛞 ]$(WHITE) $< :"
+	@$(CC) $(CFLAGS) -c $< -o $@
+	@printf "$(RETURN)$(GREEN)[DONE! ✅]$(WHITE) $< -> $@\n"
+
+-include $(DEPS)
 
 clean:
-	rm -rf ${NAME}
+	@$(RM) $(OBJ_DIR)
+	@printf "$(YELLOW)[CLEANED] Object directory removed.$(WHITE)\n"
 
 fclean: clean
-	rm -rf ${OBJS_DIR}
+	@$(RM) $(NAME)
+	@printf "$(YELLOW)[CLEANED] Binary removed.$(WHITE)\n"
 
 re: fclean all
 
-.PHONY: all clean fclean re lib
+.PHONY: all clean fclean re
