@@ -33,7 +33,7 @@ Press ESC to close the program.
 
 <h5>AI USAGE</h5>
 
-AI (gemini by Google) was mostly used to help me understand the maths (matrices) and some complex opengl API/graphical notions. It was also occasionally used to help me debug code. No code was directly copy paste from the ai. This code is mine (witten by me) and i undestand it (or at least I did when writing it) perfectly.
+AI (gemini by Google) was mostly used to help me understand the maths (matrices) and some complex opengl API/graphical notions. It was also occasionally used to help me debug code. No code was directly copy paste from the AI. This code is mine (written by me) and i understand it (or at least I did when writing it) perfectly.
 
 
 <br><br><br><br><br>
