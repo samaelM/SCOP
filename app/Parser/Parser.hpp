@@ -5,7 +5,7 @@
 #	include <fstream>										//Used to open files
 #	include <optional>										//Used to make return value optionnal
 
-#	include "../../ressources/lib/glad/include/glad/glad.h"	//Used to find opengl functions and types
+#	include "../../ressources/lib/glad/include/glad/gl.h"	//Used to find opengl functions and types
 #	include "../Graphics/Graphics.hpp"						//Used for the Mesh, Texture and Shader classes
 
 struct tga_header {

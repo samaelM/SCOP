@@ -18,7 +18,9 @@ To compile and execute, simply use those commands:
 make all # will install all dependencies and compile the source code
 ./SCOP
 ```
-When program is launched, used arrow keys, wasd, and ijkl keys to move and rotate the mesh around it's 3 axis
+When program is launched, use the arrow keys, wasd, and ijkl keys to move and rotate the mesh around its 3 axis.
+
+Move the camera with the mouse: drag with the left button to orbit around the object, and scroll to zoom in and out. Press R to reset the camera.
 
 Press G to show the lines of the mesh, press F to return to faces. Press SPACE to alternate between texture and colors.
 

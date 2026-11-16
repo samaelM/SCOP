@@ -3,6 +3,7 @@
 #	include <iostream>		//Used to print info on the stdout
 #	include <fstream>		//Used to open files
 #	include <string.h>		//Used for memset
+#	include <math.h>		//Used for sqrtf/tanf (matrix maths)
 #	define ERRNOF std::cout << std::to_string(errno) << std::endl
 
 inline std::string load(std::string fileName) {
@@ -19,8 +20,40 @@ inline std::string load(std::string fileName) {
 	return (content);
 }
 
-inline void translate(GLfloat *m, const GLfloat vec[3]) {
-	m[3] = m[0] * vec[0] + m[1] * vec[1] + m[2] * vec[2] + m[3];
+
+inline float dot3(const float a[3], const float b[3]) {
+	return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+}
+
+inline void cross3(const float a[3], const float b[3], float out[3]) {
+	const float x = a[1] * b[2] - a[2] * b[1];
+	const float y = a[2] * b[0] - a[0] * b[2];
+	const float z = a[0] * b[1] - a[1] * b[0];
+	out[0] = x; out[1] = y; out[2] = z;
+}
+
+inline void normalize3(float v[3]) {
+	const float len = sqrtf(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+	if (len > 1e-6f) {
+		v[0] /= len; v[1] /= len; v[2] /= len;
+	}
+}
+
+inline void lookAt(float *m, const float eye[3], const float center[3], const float up[3]) {
+	float f[3] = { center[0] - eye[0], center[1] - eye[1], center[2] - eye[2] };
+	normalize3(f);
+
+	float s[3];
+	cross3(f, up, s);
+	normalize3(s);
+
+	float u[3];
+	cross3(s, f, u);
+
+	m[0] = s[0];  m[4] = s[1];  m[8]  = s[2];  m[12] = -dot3(s, eye);
+	m[1] = u[0];  m[5] = u[1];  m[9]  = u[2];  m[13] = -dot3(u, eye);
+	m[2] = -f[0]; m[6] = -f[1]; m[10] = -f[2]; m[14] =  dot3(f, eye);
+	m[3] = 0.0f;  m[7] = 0.0f;  m[11] = 0.0f;  m[15] = 1.0f;
 }
 
 

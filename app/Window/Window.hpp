@@ -1,7 +1,7 @@
 #ifndef SCOP_WINDOW_HPP
 #	define SCOP_WINDOW_HPP
 
-#	include "../../ressources/lib/glad/include/glad/glad.h"	//Used to find opengl functions and types
+#	include "../../ressources/lib/glad/include/glad/gl.h"	//Used to find opengl functions and types
 #	include "../Graphics/Graphics.hpp"						//Used for the Mesh, Texture and Shader classes
 #	include "../Parser/Parser.hpp"							//Used to parse .obj file
 
@@ -35,6 +35,11 @@ class Window {
 		Texture *_texture = NULL;
 		Shader *_shader = NULL;
 
+		Camera _camera;
+		bool _dragging = false;
+		double _lastX = 0.0;
+		double _lastY = 0.0;
+
 		float _deltaTime = 0.0f;
 
 		void init(const int &width, const int &height, const char* title);
@@ -42,6 +47,7 @@ class Window {
 		void loadMesh(const std::string &path);
 		void loadTexture(const std::string &path);
 		void loadShaders(const std::string &vertShPath, const std::string &fragShPath);
+		void handleInput();
 
 	public:
 		Window(	const Paramters &param,
@@ -53,8 +59,16 @@ class Window {
 
 		void start();
 		void moveMesh(const float direction, const Axis axis);
+
 		static void keyCallbackTrampoline(GLFWwindow* window, int key, int scancode, int action, int mods);
 		void processInput(int key, int scancode, int action, int mods);
+
+		static void mouseButtonTrampoline(GLFWwindow* window, int button, int action, int mods);
+		void onMouseButton(int button, int action, int mods);
+		static void cursorPosTrampoline(GLFWwindow* window, double xpos, double ypos);
+		void onCursorPos(double xpos, double ypos);
+		static void scrollTrampoline(GLFWwindow* window, double xoffset, double yoffset);
+		void onScroll(double xoffset, double yoffset);
 
 		class WindowCreationException : public std::exception {
 			virtual const char* what() const throw() {

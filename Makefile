@@ -17,9 +17,10 @@ SRCS			:=	app/main.cpp \
 					app/Parser/Parser.cpp \
 					app/Graphics/Mesh.cpp \
 					app/Graphics/Shader.cpp \
-					app/Graphics/Texture.cpp
+					app/Graphics/Texture.cpp \
+					app/Graphics/Camera.cpp
 
-GLAD_SRC		:=	ressources/lib/glad/src/glad.c
+GLAD_SRC		:=	ressources/lib/glad/src/gl.c
 
 OBJS			:=	$(SRCS:%.cpp=$(OBJ_DIR)/%.o)
 OBJ_GLAD		:=	$(GLAD_SRC:%.c=$(OBJ_DIR)/%.o)
@@ -37,7 +38,7 @@ RETURN			:=	\033[2K\r
 
 all: $(NAME)
 
-$(NAME): $(OBJS) $(GLAD_LIB)
+$(NAME): $(GLAD_LIB) $(OBJS)
 	@printf "$(RETURN)$(RED)[LINKING 🛞 ]$(WHITE) $@ :"
 	@$(CXX) $(CXXFLAGS) $(OBJS) $(GLAD_LIB) $(LDLIBS) -o $@
 	@printf "$(RETURN)$(GREEN)[DONE! ✅]$(WHITE) $@\n"
@@ -46,7 +47,7 @@ $(NAME): $(OBJS) $(GLAD_LIB)
 	@printf "    ͞ v ͞ ͞ ͞ ͞ ͞ ͞ ͞ ͞ \n"
 	@printf "   /\\/\\ \n"
 	@printf "  ( $(FLASH)o$(RED)$(BOLD)w$(FLASH)o$(RED)$(BOLD))\n"
-	@printf "  / >*<\\ \n$(RESET)"
+	@printf "  / >*<\\ \n$(WHITE)"
 
 $(GLAD_SRC):
 	@bash ./setup.sh

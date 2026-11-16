@@ -15,16 +15,15 @@ void Window::keyCallbackTrampoline(GLFWwindow* window, int key, int scancode, in
 void Window::processInput(int key, int scancode, int action, int mods) {
 	(void)scancode;
 	(void)mods;
+	if (action != GLFW_PRESS)
+		return;
 	switch (key)
 	{
-	case GLFW_KEY_LEFT_CONTROL:
-		break;
 	case GLFW_KEY_ESCAPE:
 		glfwSetWindowShouldClose(this->_window, true);
 		break;
 	case GLFW_KEY_SPACE:
-		if (action == GLFW_RELEASE)
-			this->_mesh->changeTexture();
+		this->_mesh->changeTexture();
 		break;
 	case GLFW_KEY_G:
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -32,49 +31,77 @@ void Window::processInput(int key, int scancode, int action, int mods) {
 	case GLFW_KEY_F:
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		break;
-
-	case GLFW_KEY_LEFT:
-		this->_mesh->move(-1, Axis::X, this->_deltaTime);
+	case GLFW_KEY_R:
+		this->_camera.reset();
 		break;
-	case GLFW_KEY_RIGHT:
-		this->_mesh->move(1, Axis::X, this->_deltaTime);
-		break;
-	case GLFW_KEY_UP:
- 		this->_mesh->move(1, Axis::Y, this->_deltaTime);
-		break;
-	case GLFW_KEY_DOWN:
-		this->_mesh->move(-1, Axis::Y, this->_deltaTime);
-		break;
-
-	case GLFW_KEY_W:
-		this->_mesh->move(-1, Axis::Z, this->_deltaTime);
-		break;
-	case GLFW_KEY_A:
-		this->_mesh->rotate(1, Axis::Z, this->_deltaTime);
-		break;
-	case GLFW_KEY_S:
-		this->_mesh->move(1, Axis::Z, this->_deltaTime);
-		break;
-	case GLFW_KEY_D:
-		this->_mesh->rotate(-1, Axis::Z, this->_deltaTime);
-		break;
-
-	case GLFW_KEY_I:
-		this->_mesh->rotate(-1, Axis::X, this->_deltaTime);
-		break;
-	case GLFW_KEY_J:
-		this->_mesh->rotate(-1, Axis::Y, this->_deltaTime);
-		break;
-	case GLFW_KEY_K:
-		this->_mesh->rotate(1, Axis::X, this->_deltaTime);
-		break;
-	case GLFW_KEY_L:
-		this->_mesh->rotate(1, Axis::Y, this->_deltaTime);
-		break;
-
 	default:
 		break;
 	}
+}
+
+void Window::handleInput() {
+	GLFWwindow *w = this->_window;
+	const float dt = this->_deltaTime;
+
+	if (glfwGetKey(w, GLFW_KEY_LEFT) == GLFW_PRESS)  this->_mesh->move(-1, Axis::X, dt);
+	if (glfwGetKey(w, GLFW_KEY_RIGHT) == GLFW_PRESS) this->_mesh->move(1, Axis::X, dt);
+	if (glfwGetKey(w, GLFW_KEY_UP) == GLFW_PRESS)    this->_mesh->move(1, Axis::Y, dt);
+	if (glfwGetKey(w, GLFW_KEY_DOWN) == GLFW_PRESS)  this->_mesh->move(-1, Axis::Y, dt);
+	if (glfwGetKey(w, GLFW_KEY_W) == GLFW_PRESS)     this->_mesh->move(-1, Axis::Z, dt);
+	if (glfwGetKey(w, GLFW_KEY_S) == GLFW_PRESS)     this->_mesh->move(1, Axis::Z, dt);
+
+	if (glfwGetKey(w, GLFW_KEY_A) == GLFW_PRESS)     this->_mesh->rotate(1, Axis::Z, dt);
+	if (glfwGetKey(w, GLFW_KEY_D) == GLFW_PRESS)     this->_mesh->rotate(-1, Axis::Z, dt);
+	if (glfwGetKey(w, GLFW_KEY_I) == GLFW_PRESS)     this->_mesh->rotate(-1, Axis::X, dt);
+	if (glfwGetKey(w, GLFW_KEY_K) == GLFW_PRESS)     this->_mesh->rotate(1, Axis::X, dt);
+	if (glfwGetKey(w, GLFW_KEY_J) == GLFW_PRESS)     this->_mesh->rotate(-1, Axis::Y, dt);
+	if (glfwGetKey(w, GLFW_KEY_L) == GLFW_PRESS)     this->_mesh->rotate(1, Axis::Y, dt);
+}
+
+void Window::mouseButtonTrampoline(GLFWwindow* window, int button, int action, int mods) {
+	Window* instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
+	if (instance)
+		instance->onMouseButton(button, action, mods);
+}
+
+void Window::onMouseButton(int button, int action, int mods) {
+	(void)mods;
+	if (button != GLFW_MOUSE_BUTTON_LEFT)
+		return;
+	if (action == GLFW_PRESS) {
+		this->_dragging = true;
+		glfwGetCursorPos(this->_window, &this->_lastX, &this->_lastY);
+	}
+	else if (action == GLFW_RELEASE) {
+		this->_dragging = false;
+	}
+}
+
+void Window::cursorPosTrampoline(GLFWwindow* window, double xpos, double ypos) {
+	Window* instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
+	if (instance)
+		instance->onCursorPos(xpos, ypos);
+}
+
+void Window::onCursorPos(double xpos, double ypos) {
+	if (!this->_dragging)
+		return;
+	const double dx = xpos - this->_lastX;
+	const double dy = ypos - this->_lastY;
+	this->_lastX = xpos;
+	this->_lastY = ypos;
+	this->_camera.orbit(static_cast<float>(dx), static_cast<float>(dy));
+}
+
+void Window::scrollTrampoline(GLFWwindow* window, double xoffset, double yoffset) {
+	Window* instance = static_cast<Window*>(glfwGetWindowUserPointer(window));
+	if (instance)
+		instance->onScroll(xoffset, yoffset);
+}
+
+void Window::onScroll(double xoffset, double yoffset) {
+	(void)xoffset;
+	this->_camera.zoom(static_cast<float>(yoffset));
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
@@ -115,12 +142,15 @@ void Window::init(const int &width, const int &height, const char* title) {
 	glfwSetFramebufferSizeCallback(this->_window, framebuffer_size_callback);
 	glfwSetWindowUserPointer(this->_window, this);
 	glfwSetKeyCallback(this->_window, Window::keyCallbackTrampoline);
+	glfwSetMouseButtonCallback(this->_window, Window::mouseButtonTrampoline);
+	glfwSetCursorPosCallback(this->_window, Window::cursorPosTrampoline);
+	glfwSetScrollCallback(this->_window, Window::scrollTrampoline);
 
 	this->gladLoad();
 }
 
 void Window::gladLoad() {
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+	if (!gladLoadGL(glfwGetProcAddress)) {
 		throw GladInitializationException();
 	}
 
@@ -164,8 +194,13 @@ void Window::start() {
 
 	this->_mesh->prepare(*this->_shader);
 
+	glUseProgram(this->_shader->getShader());
+	const GLint texLoc = glGetUniformLocation(this->_shader->getShader(), "ourTexture");
+	if (texLoc >= 0)
+		glUniform1i(texLoc, 0);
+	this->_texture->bind();
+
 	std::chrono::steady_clock::time_point lastTime = std::chrono::steady_clock::now();
-	this->_mesh->changeTexture();
 
 	while (!glfwWindowShouldClose(this->_window)) {
 		glfwPollEvents();
@@ -177,11 +212,26 @@ void Window::start() {
 		if (this->_deltaTime > 0.1f) this->_deltaTime = 0.1f;
 		lastTime = currentTime;
 
+		this->handleInput();
+
+		int fbWidth, fbHeight;
+		glfwGetFramebufferSize(this->_window, &fbWidth, &fbHeight);
+		const float aspect = (fbHeight > 0)
+			? static_cast<float>(fbWidth) / static_cast<float>(fbHeight)
+			: 1.0f;
+
+		GLfloat projection[16];
+		perspective(projection, static_cast<float>(M_PI) / 2.0f, aspect, 0.1f, 100.0f);
+		GLfloat view[16];
+		this->_camera.getViewMatrix(view);
+		this->_mesh->setProjection(projection);
+		this->_mesh->setView(view);
+
 		glClearColor(0.3f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(this->_shader->getShader());
 
-		this->_mesh->show();
+		this->_mesh->show(this->_deltaTime);
 
 		glBindVertexArray(this->_mesh->getVAO());
 		glDrawElements(GL_TRIANGLES, this->_mesh->nbFaces(), GL_UNSIGNED_INT, 0);

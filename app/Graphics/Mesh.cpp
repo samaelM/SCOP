@@ -28,12 +28,12 @@ uint32_t Mesh::init() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
 	glEnableVertexAttribArray(0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	this->_VBO = VBO;
-	glDeleteBuffers(1, &EBO);
+	this->_EBO = EBO;
 	return 1;
 }
 
@@ -110,29 +110,25 @@ void Mesh::rotate(const float direction, const Axis axis, const float &deltaTime
 }
 
 void Mesh::move(const float direction, const Axis axis, const float &deltaTime) {
-	(void)deltaTime;
+	const float step = direction * 1.5f * deltaTime;
 	switch (axis)
 	{
 	case Axis::X:
-		this->_deltas.position[0] += direction * 0.05;
+		this->_deltas.position[0] += step;
 		break;
 	case Axis::Y:
-		this->_deltas.position[1] += direction * 0.05;
+		this->_deltas.position[1] += step;
 		break;
 	case Axis::Z:
-		this->_deltas.position[2] += direction * 0.05;
+		this->_deltas.position[2] += step;
 		break;
-	
+
 	default:
 		break;
 	}
 }
 
-void Mesh::show() {
-	perspective(this->_projection, M_PI / 2, 800/800, 0.1f, 100.0f);
-	GLfloat vec[3] = {0.0f, 0.0f, -3.0f};
-	translate(this->_view, vec);
-
+void Mesh::show(const float deltaTime) {
 	glUniform1f(this->_DXUniform, this->_deltas.position[0]);
 	glUniform1f(this->_DYUniform, this->_deltas.position[1]);
 	glUniform1f(this->_DZUniform, this->_deltas.position[2]);
@@ -141,23 +137,22 @@ void Mesh::show() {
 	glUniformMatrix4fv(this->_viewUniform, 1, GL_FALSE, this->_view);
 	glUniformMatrix4fv(this->_projectionUniform, 1, GL_FALSE, this->_projection);
 
-	if (this->_textureNeedUpdate) {
-		float factor = (this->_moreTexture? 1.0f:-1.0f);
-		std::chrono::duration<float> elapsed = this->_lastTextureChange - std::chrono::steady_clock::now();
-		this->_texturePercent += elapsed.count() * factor;
-		if (this->_texturePercent > 1.0f) {
-			this->_texturePercent = 1.0f;
-			this->_textureNeedUpdate = false;
-		}
-		else if (this->_texturePercent < 0.0f) {
-			this->_texturePercent = 0.0f;
-			this->_textureNeedUpdate = false;
-		}
+	const float target = this->_showTexture ? 1.0f : 0.0f;
+	if (this->_texturePercent < target) {
+		this->_texturePercent += deltaTime;
+		if (this->_texturePercent > target)
+			this->_texturePercent = target;
+	}
+	else if (this->_texturePercent > target) {
+		this->_texturePercent -= deltaTime;
+		if (this->_texturePercent < target)
+			this->_texturePercent = target;
 	}
 	glUniform1f(this->_texturePercentUniform, this->_texturePercent);
 }
 
 Mesh::~Mesh() {
 	glDeleteBuffers(1, &this->_VBO);
+	glDeleteBuffers(1, &this->_EBO);
 	glDeleteVertexArrays(1, &this->_VAO);
 }
